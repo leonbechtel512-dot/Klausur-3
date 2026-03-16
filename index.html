@@ -7,31 +7,20 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-  
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="bg-slate-900">
+  
   <div id="root"></div>
 
-  <script type="text/babel">
-    const { useState, useEffect } = React;
-
-    // --- WORKAROUND: Icons als Emojis für das Single-HTML-Format ---
-    const Trophy = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>🏆</span>;
-    const Star = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>⭐</span>;
-    const AlertTriangle = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>⚠️</span>;
-    const CheckCircle2 = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>✅</span>;
-    const ChevronRight = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>➡️</span>;
-    const ArrowLeft = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>⬅️</span>;
-    const BookMarked = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>📖</span>;
-    const Map = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>🗺️</span>;
-    const Castle = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>🏰</span>;
-    const Play = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>▶️</span>;
-    const Lock = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>🔒</span>;
-    const Sparkles = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>✨</span>;
-    const Skull = ({className}) => <span className={className} style={{display:'inline-block', fontStyle:'normal'}}>💀</span>;
+  <script type="text/babel" data-type="module">
+    // --- IMPORTS AUS DEM INTERNET (esm.sh) ---
+    import React, { useState, useEffect } from 'https://esm.sh/react@18';
+    import { createRoot } from 'https://esm.sh/react-dom@18/client';
+    import { 
+      Trophy, Star, AlertTriangle, CheckCircle2, 
+      ChevronRight, ArrowLeft, BookMarked, Map, Castle, Play, Lock, Sparkles, Skull 
+    } from 'https://esm.sh/lucide-react';
 
     // --- HILFSKOMPONENTE FÜR BRÜCHE ---
     const Fraction = ({ num, den }) => (
@@ -120,14 +109,19 @@
       </div>
     );
 
-    // --- DATEN ---
+    // --- DATEN: WELT 1 & WELT 2 ---
     const topicsData = [
       {
-        id: "mittlere-aenderung", world: 1, category: "Welt 1", title: "1-1: Mittlere Änderungsrate", shortDesc: "Differenzenquotient & Sekante", mapPos: { x: 15, y: 88 },
+        id: "mittlere-aenderung",
+        world: 1,
+        category: "Welt 1",
+        title: "1-1: Mittlere Änderungsrate",
+        shortDesc: "Differenzenquotient & Sekante",
+        mapPos: { x: 15, y: 88 },
         content: (
           <div className="space-y-4 text-gray-700">
             <p>Die <strong>mittlere Änderungsrate</strong> gibt an, wie stark sich ein Graph in einem bestimmten Abschnitt (Intervall) <em>durchschnittlich</em> ändert. Stell dir vor, du verbindest Start- und Endpunkt dieses Abschnitts mit einer geraden Linie (der sogenannten <strong>Sekante</strong>).</p>
-            <p>Die Steigung dieser Sekante berechnen wir mit dem <strong>Differenzenquotient</strong>:</p>
+            <p>Die Steigung dieser Sekante berechnen wir mit dem <strong>Differenzenquotient</strong> (das ist im Prinzip nur das Steigungsdreieck <span className="inline-flex items-center align-middle">m = <Fraction num="Δy" den="Δx" /></span>):</p>
             <div className="bg-sky-50 p-4 rounded-lg border border-sky-200 flex items-center justify-center font-mono text-lg font-bold text-sky-900">
               m = <Fraction num="f(x₂) - f(x₁)" den="x₂ - x₁" />
             </div>
@@ -146,6 +140,8 @@
             <MathGraph xD={[0, 4]} yD={[-1, 6]}>
               <PlotPath fn={x => 0.5 * x * x} xD={[0, 4]} yD={[-1, 6]} color="#3b82f6" />
               <PlotPath fn={x => 2 * x - 1.5} xD={[0, 4]} yD={[-1, 6]} color="#ef4444" dashed />
+              <PlotLine x1={1} y1={0.5} x2={3} y2={0.5} xD={[0,4]} yD={[-1,6]} color="#10b981" />
+              <PlotLine x1={3} y1={0.5} x2={3} y2={4.5} xD={[0,4]} yD={[-1,6]} color="#10b981" />
               <PlotPoint x={1} y={0.5} xD={[0, 4]} yD={[-1, 6]} color="#ef4444" label="P₁" />
               <PlotPoint x={3} y={4.5} xD={[0, 4]} yD={[-1, 6]} color="#ef4444" label="P₂" />
             </MathGraph>
@@ -154,15 +150,26 @@
         mistakes: "Oft werden beim Einsetzen in die Formel x und y vertauscht. Achte genau darauf: Oben im Bruch (Zähler) stehen die y-Werte (die f(x)-Werte), unten im Nenner die x-Werte!",
         quiz: [
           { question: "1. Welche geometrische Linie gehört zur mittleren Änderungsrate?", options: ["Tangente", "Sekante", "Normale"], answer: 1, explanation: "Richtig! Die Sekante schneidet den Graphen in den zwei Punkten des Intervalls." },
-          { question: "2. Berechne die mittlere Änderungsrate von f(x) = x² im Intervall [0; 3].", options: ["3", "6", "9"], answer: 0, explanation: "Klasse! f(3)=9, f(0)=0. Eingesetzt: m = (9-0)/(3-0) = 3." }
+          { question: <span>2. Wie lautet die Formel für den Differenzenquotient?</span>, options: [<span><Fraction num="x₂ - x₁" den="f(x₂) - f(x₁)" /></span>, <span><Fraction num="f(x₂) - f(x₁)" den="x₂ - x₁" /></span>, "f'(x)"], answer: 1, explanation: "Die y-Werte (Höhenunterschied) müssen oben in den Zähler!" },
+          { question: "3. Berechne die mittlere Änderungsrate von f(x) = 2x im Intervall [1; 4].", options: ["2", "4", "6"], answer: 0, explanation: <span>Richtig! f(4)=8, f(1)=2. Eingesetzt: <span className="inline-flex items-center">m = <Fraction num="8 - 2" den="4 - 1" /> = <Fraction num="6" den="3" /> = 2</span>. Da f(x) eine Gerade ist, ist die Steigung überall 2!</span> },
+          { question: "4. Berechne die mittlere Änderungsrate von f(x) = x² im Intervall [0; 3].", options: ["3", "6", "9"], answer: 0, explanation: <span>Klasse! f(3)=9, f(0)=0. Eingesetzt: <span className="inline-flex items-center">m = <Fraction num="9 - 0" den="3 - 0" /> = <Fraction num="9" den="3" /> = 3</span>.</span> },
+          { question: "5. Warum können wir die momentane Änderung (in nur einem Punkt) nicht einfach mit dem Differenzenquotient berechnen?", options: ["Weil das Intervall dann [a; a] wäre und wir durch 0 teilen würden", "Weil die Formel dann negativ wird", "Weil y dann 0 ist"], answer: 0, explanation: "Exakt! Durch 0 darf man nicht teilen. Deshalb brauchen wir die Ableitung!" }
         ]
       },
-      // HINWEIS: Hier habe ich aus Platzgründen einige Topics entfernt, DU KANNST HIER DEIN KOMPLETTES `topicsData` ARRAY WIEDER EINFÜGEN!
       {
-        id: "momentane-aenderung", world: 1, category: "Welt 1", title: "1-2: Momentane Änderung", shortDesc: "Ableitung & Tangentensteigung", mapPos: { x: 45, y: 75 },
+        id: "momentane-aenderung",
+        world: 1,
+        category: "Welt 1",
+        title: "1-2: Momentane Änderung",
+        shortDesc: "Ableitung & Tangentensteigung",
+        mapPos: { x: 45, y: 75 },
         content: (
           <div className="space-y-4 text-gray-700">
             <p>Die <strong>momentane Änderungsrate</strong> beschreibt die Steigung des Graphen in einem <em>einzigen, exakten Punkt</em>. </p>
+            <p>Geometrisch entspricht das der Steigung einer <strong>Tangente</strong>, die den Graphen in genau diesem Punkt berührt. Wir berechnen diese Steigung mit der <strong>1. Ableitung f'(x)</strong> an der gesuchten Stelle x₀.</p>
+            <div className="bg-amber-50 p-3 rounded-lg border-l-4 border-amber-500 font-bold text-amber-900 shadow-sm">
+              f'(x₀) = Steigung der Tangente im Punkt (x₀ | f(x₀))
+            </div>
           </div>
         ),
         example: {
@@ -171,6 +178,7 @@
             <ul className="space-y-2 list-disc pl-5">
               <li><strong>Schritt 1 (Ableitung bilden):</strong> <br/>f'(x) = -2x + 4</li>
               <li><strong>Schritt 2 (x₀ einsetzen):</strong> <br/>f'(1) = -2 · 1 + 4 = <strong>2</strong></li>
+              <li>Die Steigung der gelben Tangente im Berührpunkt ist 2.</li>
             </ul>
           ),
           visual: (
@@ -181,9 +189,406 @@
             </MathGraph>
           )
         },
-        mistakes: "Viele Schüler denken, f'(x₀) gibt den y-Wert an. Falsch! f(x₀) ist die 'Höhe', f'(x₀) ist die 'Steilheit'.",
+        mistakes: "Viele Schüler denken, f'(x₀) gibt den y-Wert an. Falsch! f(x₀) ist die 'Höhe', f'(x₀) ist die 'Steilheit' (Steigung) des Graphen an dieser Stelle.",
         quiz: [
-          { question: "1. Was berechnet die erste Ableitung f'(x₀) geometrisch?", options: ["Die Steigung der Sekante", "Die Steigung der Tangente", "Den y-Achsenabschnitt"], answer: 1, explanation: "Perfekt! f'(x) gibt immer die Tangentensteigung im Berührpunkt an." }
+          { question: "1. Was berechnet die erste Ableitung f'(x₀) geometrisch?", options: ["Die Steigung der Sekante", "Die Steigung der Tangente", "Den y-Achsenabschnitt"], answer: 1, explanation: "Perfekt! f'(x) gibt immer die Tangentensteigung im Berührpunkt an." },
+          { question: "2. Aus welcher mathematischen Idee entsteht die momentane Änderungsrate?", options: ["Dem Grenzwert (Limes), bei dem das Intervall unendlich klein wird", "Dem Satz des Pythagoras", "Der Mitternachtsformel"], answer: 0, explanation: "Richtig! Wir lassen im Differenzenquotient den Abstand gegen 0 laufen (Intervall wird unendlich klein)." },
+          { question: "3. f(x) = x². Wie groß ist die momentane Änderungsrate an der Stelle x = 3?", options: ["6", "9", "3"], answer: 0, explanation: "Ableitung bilden: f'(x) = 2x. Dann 3 einsetzen: f'(3) = 2*3 = 6." },
+          { question: "4. f(x) = 5x + 2. Wie groß ist die momentane Änderungsrate an der Stelle x = 100?", options: ["502", "5", "100"], answer: 1, explanation: "Da f(x) eine Gerade ist, ist ihre Steigung überall gleich! f'(x) = 5." },
+          { question: "5. Eine Funktion f(x) hat an der Stelle x=2 einen Hochpunkt. Wie groß ist dort die momentane Änderungsrate f'(2)?", options: ["0", "Sehr groß", "Negativ"], answer: 0, explanation: "Genial! Am Hochpunkt ist die Tangente waagerecht, also ist die Steigung (momentane Änderung) exakt 0." }
+        ]
+      },
+      {
+        id: "graphisches-ableiten",
+        world: 1,
+        category: "Welt 1",
+        title: "1-3: Graphisches Ableiten",
+        shortDesc: "Die magische NEW-Regel",
+        mapPos: { x: 80, y: 60 },
+        content: (
+          <div className="space-y-4 text-gray-700">
+            <p>Beim graphischen Ableiten zeichnet man den Graphen der Ableitung f'(x) direkt unter den Graphen von f(x). Hierbei hilft die <strong>NEW-Regel</strong> ("Aus <strong>N</strong> wird nichts, aus <strong>E</strong> wird <strong>N</strong>, aus <strong>W</strong> wird <strong>E</strong>"):</p>
+            <ul className="list-disc pl-5">
+              <li>Extrempunkt (E) bei f(x) ➔ Nullstelle (N) bei f'(x)</li>
+              <li>Wendepunkt (W) bei f(x) ➔ Extrempunkt (E) bei f'(x)</li>
+              <li>Graph f(x) steigt ➔ f'(x) verläuft im positiven y-Bereich</li>
+              <li>Graph f(x) fällt ➔ f'(x) verläuft im negativen y-Bereich</li>
+            </ul>
+          </div>
+        ),
+        example: {
+          functionText: "Blau = f(x) // Rot = f'(x)",
+          calculation: (
+            <ul className="space-y-2 list-disc pl-5">
+              <li>Blau hat einen Hochpunkt (E) bei x=-1 ➔ Rot hat dort eine Nullstelle (N).</li>
+              <li>Blau hat einen Tiefpunkt (E) bei x=1 ➔ Rot hat dort eine Nullstelle (N).</li>
+              <li>Dazwischen fällt Blau (Steigung negativ) ➔ Rot ist unterhalb der x-Achse.</li>
+            </ul>
+          ),
+          visual: (
+            <MathGraph xD={[-3, 3]} yD={[-4, 4]}>
+              <PlotPath fn={x => Math.pow(x,3) - 3*x} xD={[-3, 3]} yD={[-4, 4]} color="#3b82f6" />
+              <PlotPath fn={x => 3*x*x - 3} xD={[-3, 3]} yD={[-4, 4]} color="#ef4444" strokeWidth={2.5} />
+              <PlotLine x1={-1} y1={2} x2={-1} y2={0} xD={[-3,3]} yD={[-4,4]} color="#94a3b8" dashed />
+              <PlotLine x1={1} y1={-2} x2={1} y2={0} xD={[-3,3]} yD={[-4,4]} color="#94a3b8" dashed />
+              <PlotPoint x={-1} y={2} xD={[-3, 3]} yD={[-4, 4]} color="#3b82f6" label="HP (E)" />
+              <PlotPoint x={-1} y={0} xD={[-3, 3]} yD={[-4, 4]} color="#ef4444" label="N" labelOffset={{x:0, y:15}} />
+            </MathGraph>
+          )
+        },
+        mistakes: "Schüler zeichnen f'(x) hoch, wenn f(x) weit oben im Koordinatensystem liegt (hohe y-Werte). Es geht aber NUR um die Steigung!",
+        quiz: [
+          { question: "1. Wofür steht das 'E' in der NEW-Regel?", options: ["Extremstelle", "Ersatzpunkt", "Eulersche Zahl"], answer: 0, explanation: "Richtig! Hoch- und Tiefpunkte (Extremstellen)." },
+          { question: "2. f(x) hat bei x=4 einen Tiefpunkt. Was gilt für f'(x)?", options: ["f'(4) hat einen Tiefpunkt", "f'(4) = 0 (Nullstelle)", "f'(4) ist positiv"], answer: 1, explanation: "Aus E wird N: Ein Extrempunkt bei f(x) führt zu einer Nullstelle bei f'(x)." },
+          { question: "3. Der Graph von f(x) fällt im Intervall von 0 bis 5. Wo verläuft f'(x) in diesem Bereich?", options: ["Oberhalb der x-Achse (positiv)", "Unterhalb der x-Achse (negativ)", "Genau auf der x-Achse"], answer: 1, explanation: "Fallen bedeutet negative Steigung. Also sind die y-Werte von f'(x) im Minus-Bereich." },
+          { question: "4. f(x) ist eine gerade Linie, die steigt (z.B. y = 2x). Wie sieht der Graph der Ableitung f'(x) aus?", options: ["Eine waagerechte Linie oberhalb der x-Achse", "Eine Parabel", "Eine Nullstelle"], answer: 0, explanation: "Die Steigung ist überall konstant positiv. Also ist f'(x) eine waagerechte Linie bei y=2." },
+          { question: "5. Wir wissen: f'(x) ist eine nach oben geöffnete Parabel. Welchen Grad muss f(x) dann mindestens haben?", options: ["Grad 2", "Grad 3", "Grad 4"], answer: 1, explanation: "f'(x) hat Grad 2 (Parabel). Beim Ableiten wird der Grad immer um 1 kleiner. Also muss f(x) vorher Grad 3 (z.B. x³) gewesen sein!" }
+        ]
+      },
+      {
+        id: "ableitungsregeln",
+        world: 1,
+        category: "Welt 1",
+        title: "1-4: Ableitungsregeln",
+        shortDesc: "Potenz- & Faktorregel",
+        mapPos: { x: 50, y: 40 },
+        content: (
+          <div className="space-y-4 text-gray-700">
+            <p>Um die Ableitungsfunktion f'(x) schnell zu bestimmen, gibt es drei goldene Regeln:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li><strong>Potenzregel:</strong> Der Exponent wandert nach vorne mit Mal, der neue Exponent wird um 1 kleiner. (Aus x³ wird 3x²)</li>
+              <li><strong>Faktorregel:</strong> Zahlen, die mit "Mal" vor dem x stehen, bleiben beim Ableiten einfach erhalten.</li>
+              <li><strong>Summenregel:</strong> Jeder Teilstrich (durch + oder - getrennt) wird einzeln abgeleitet. Zahlen ohne x fallen komplett weg (werden zu 0).</li>
+            </ul>
+          </div>
+        ),
+        example: {
+          functionText: "f(x) = 2x³ - 4x² + 5x - 7",
+          calculation: (
+            <ul className="space-y-2 list-disc pl-5">
+              <li><strong>Teil 1 (2x³):</strong> Die 3 wandert nach vorn (2·3=6), hoch 2 bleibt übrig ➔ <strong>6x²</strong></li>
+              <li><strong>Teil 2 (-4x²):</strong> Die 2 wandert nach vorn (-4·2=-8), hoch 1 bleibt ➔ <strong>-8x</strong></li>
+              <li><strong>Teil 3 (+5x):</strong> x fällt weg (da x¹ zu 1x⁰ = 1 wird) ➔ <strong>+5</strong></li>
+              <li><strong>Teil 4 (-7):</strong> Zahl ohne x fällt weg ➔ <strong>0</strong></li>
+              <li><strong>Ergebnis: f'(x) = 6x² - 8x + 5</strong></li>
+            </ul>
+          ),
+          visual: (
+            <MathGraph xD={[-1, 3]} yD={[-2, 6]}>
+              <PlotPath fn={x => x*x} xD={[-1, 3]} yD={[-2, 6]} color="#3b82f6" />
+              <PlotPath fn={x => 2*x} xD={[-1, 3]} yD={[-2, 6]} color="#8b5cf6" strokeWidth={2.5} />
+              <PlotPoint x={2} y={4} xD={[-1, 3]} yD={[-2, 6]} color="#3b82f6" label="f(x)=x²" labelOffset={{x:-30,y:0}} />
+              <PlotPoint x={2} y={4} xD={[-1, 3]} yD={[-2, 6]} color="#8b5cf6" label="f'(x)=2x" labelOffset={{x:35,y:0}} />
+            </MathGraph>
+          )
+        },
+        mistakes: "Einzelne Zahlen am Ende (Konstanten) werden oft falsch abgeleitet. Aus +7 wird nicht +7, sondern 0. Auch f(x) = x wird oft zu 0 abgeleitet. Falsch! Es wird zu 1.",
+        quiz: [
+          { question: "1. Was besagt die Faktorregel?", options: ["Zahlen ohne x fallen weg", "Zahlen vor dem x (mit Mal) bleiben beim Ableiten erhalten", "Plus und Minus trennen die Ableitung"], answer: 1, explanation: "Genau! 4x² wird zu 4 * 2x = 8x. Die 4 bleibt als Faktor stehen." },
+          { question: "2. Leite ab: f(x) = x⁴", options: ["4x", "4x³", "3x⁴"], answer: 1, explanation: "Potenzregel: Die 4 wandert nach vorne, oben wird es eins weniger (4-1=3)." },
+          { question: "3. Leite ab: f(x) = 3x²", options: ["6x", "3x", "6x²"], answer: 0, explanation: "Faktorregel + Potenzregel: 3 * 2x¹ = 6x." },
+          { question: "4. Leite ab: f(x) = 2x³ - 4x + 7", options: ["6x² - 4x + 7", "6x² - 4", "6x² - 4 + 7"], answer: 1, explanation: "2*3x² = 6x². Aus -4x wird -4. Die Konstante +7 fällt zu 0 weg!" },
+          { question: <span>5. Leite ab: f(x) = <Fraction num="1" den="2" />x⁴ - x</span>, options: ["2x³ - 1", "2x³", "2x³ - x"], answer: 0, explanation: <span>Super! <span className="inline-flex items-center">4 · <Fraction num="1" den="2" /> = 2</span>, also 2x³. Und aus -1x wird beim Ableiten -1.</span> }
+        ]
+      },
+      {
+        id: "tangente-normale",
+        world: 1,
+        category: "Welt 1",
+        title: "1-5: Tangente & Normale",
+        shortDesc: "y=mx+b am Berührpunkt",
+        mapPos: { x: 20, y: 30 },
+        content: (
+          <div className="space-y-4 text-gray-700">
+            <p><strong>Tangente t(x):</strong> Gerade der Form <code>y = m·x + b</code>, die den Graphen berührt. Die Steigung m ist exakt die Ableitung: <code>m = f'(x₀)</code>.</p>
+            <p><strong>Normale n(x):</strong> Die Normale steht im Berührpunkt im 90° Winkel (senkrecht) auf der Tangente. Für ihre Steigung gilt: <span className="inline-flex items-center align-middle">m<sub>n</sub> = - <Fraction num="1" den={<span>m<sub>t</sub></span>} /></span>.</p>
+          </div>
+        ),
+        example: {
+          functionText: "Tangente & Normale an f(x) = x² bei x₀ = 1",
+          calculation: (
+            <ul className="space-y-2 list-disc pl-5">
+              <li><strong>1. y-Wert berechnen:</strong> f(1) = 1² = 1. Berührpunkt P(1 | 1).</li>
+              <li><strong>2. Steigung (m<sub>t</sub>) berechnen:</strong> f'(x) = 2x ➔ f'(1) = 2.</li>
+              <li><strong>3. Tangente:</strong> Einsetzen in y = m·x + b ➔ 1 = 2·1 + b ➔ b = -1. <br/> Tangente: <strong>t(x) = 2x - 1</strong> (gelb)</li>
+              <li><strong>4. Normale:</strong> <span className="inline-flex items-center align-middle">m<sub>n</sub> = - <Fraction num="1" den="2" /> = -0.5</span>. Einsetzen: 1 = -0.5·1 + b ➔ b = 1.5. <br/> Normale: <strong>n(x) = -0.5x + 1.5</strong> (lila)</li>
+            </ul>
+          ),
+          visual: (
+            <MathGraph xD={[-1, 3]} yD={[-1, 4]}>
+              <PlotPath fn={x => x*x} xD={[-1, 3]} yD={[-1, 4]} color="#3b82f6" />
+              <PlotPath fn={x => 2*x - 1} xD={[-1, 3]} yD={[-1, 4]} color="#eab308" strokeWidth={2.5} />
+              <PlotPath fn={x => -0.5*x + 1.5} xD={[-1, 3]} yD={[-1, 4]} color="#a855f7" strokeWidth={2.5} />
+              <PlotPoint x={1} y={1} xD={[-1, 3]} yD={[-1, 4]} color="#1e293b" label="P(1|1)" />
+            </MathGraph>
+          )
+        },
+        mistakes: "Oft wird vergessen, dass man den y-Wert (y₀) noch berechnen muss, wenn nur x₀ gegeben ist. x₀ muss in die normale Funktion f(x) (NICHT in f'(x)!) eingesetzt werden.",
+        quiz: [
+          { question: "1. Woher bekommt man die Steigung m für die Tangentengleichung?", options: ["x₀ in f(x) einsetzen", "x₀ in f'(x) einsetzen", "Am y-Achsenabschnitt ablesen"], answer: 1, explanation: "Die Tangentensteigung entspricht immer dem Wert der ersten Ableitung: m = f'(x₀)." },
+          { question: "2. Wie berechnet man die Steigung der Normalen?", options: [<span>m<sub>n</sub> = f'(x₀)</span>, <span>m<sub>n</sub> = <Fraction num="1" den={<span>m<sub>t</sub></span>} /></span>, <span>m<sub>n</sub> = -<Fraction num="1" den={<span>m<sub>t</sub></span>} /></span>], answer: 2, explanation: "Die Normale steht senkrecht, daher ist ihre Steigung der negative Kehrwert der Tangentensteigung." },
+          { question: "3. f(x) = x². Welche Steigung hat die Tangente an der Stelle x = 2?", options: ["2", "4", "8"], answer: 1, explanation: "f'(x) = 2x. Einsetzen: f'(2) = 2*2 = 4." },
+          { question: "4. Wir suchen die Tangente für f(x) = 2x² an der Stelle x=1. Welchen y-Achsenabschnitt b hat sie?", options: ["b = 0", "b = -2", "b = 2"], answer: 1, explanation: "P(1|2). m = f'(1) = 4. Einsetzen in 2 = 4*1 + b ➔ 2 = 4 + b ➔ b = -2." },
+          { question: "5. Die Tangentensteigung ist m = 1. Welchen Steigungswinkel α hat die Tangente zur x-Achse?", options: ["45°", "90°", "0°"], answer: 0, explanation: "tan(α) = m. tan⁻¹(1) = 45°. Perfekt! Das ist genau die Diagonale." }
+        ]
+      },
+      {
+        id: "monotonie",
+        world: 1,
+        category: "Welt 1",
+        title: "1-6: Monotonie",
+        shortDesc: "Wo steigt/fällt der Graph?",
+        mapPos: { x: 50, y: 15 },
+        content: (
+          <div className="space-y-4 text-gray-700">
+            <p>Monotonie beschreibt, in welchen Bereichen ein Graph steigt oder fällt. Die Grenzen dieser Bereiche sind meistens die Extremstellen (denn dort geht es weder hoch noch runter, die Steigung ist 0).</p>
+            <ul className="list-disc pl-5">
+              <li><strong>Streng monoton steigend:</strong> f'(x) &gt; 0 (es geht bergauf)</li>
+              <li><strong>Streng monoton fallend:</strong> f'(x) &lt; 0 (es geht bergab)</li>
+            </ul>
+          </div>
+        ),
+        example: {
+          functionText: "Monotonie von f(x) = -0.5x² + 2x + 1",
+          calculation: (
+            <ul className="space-y-2 list-disc pl-5">
+              <li><strong>1. Ableitung nullsetzen:</strong> f'(x) = -x + 2 = 0 ➔ <strong>x = 2</strong>. (Grenze)</li>
+              <li><strong>2. Bereich davor testen (z.B. x=0):</strong> f'(0) = 2 &gt; 0. <br/>➔ <strong>streng monoton steigend</strong> (grün).</li>
+              <li><strong>3. Bereich danach testen (z.B. x=3):</strong> f'(3) = -1 &lt; 0. <br/>➔ <strong>streng monoton fallend</strong> (rot).</li>
+            </ul>
+          ),
+          visual: (
+            <MathGraph xD={[-1, 5]} yD={[-1, 4]}>
+              <PlotArea xStart={-1} xEnd={2} xD={[-1,5]} yD={[-1,4]} color="#16a34a" />
+              <PlotArea xStart={2} xEnd={5} xD={[-1,5]} yD={[-1,4]} color="#dc2626" />
+              <PlotPath fn={x => -0.5*x*x + 2*x + 1} xD={[-1, 5]} yD={[-1, 4]} color="#3b82f6" />
+              <PlotLine x1={2} y1={-1} x2={2} y2={4} xD={[-1,5]} yD={[-1,4]} color="#1e293b" dashed />
+            </MathGraph>
+          )
+        },
+        mistakes: "Es reicht nicht, nur einen Punkt zu prüfen. Man muss in der Klausur immer das ganze Intervall angeben (z.B. 'Der Graph fällt im Intervall [2; ∞]').",
+        quiz: [
+          { question: "1. Wann ist ein Graph streng monoton steigend?", options: ["Wenn f(x) > 0 ist", "Wenn f'(x) > 0 ist", "Wenn f''(x) = 0 ist"], answer: 1, explanation: "Korrekt! Die erste Ableitung (Steigung) muss größer als 0 (positiv) sein." },
+          { question: "2. Was suchen wir zuerst, um die Monotonie-Grenzen zu finden?", options: ["Die Nullstellen von f(x)", "Die Extremstellen f'(x)=0", "Den y-Achsenabschnitt"], answer: 1, explanation: "Richtig! Dort wo die Steigung 0 ist, ändert sich meistens das Steigungsverhalten." },
+          { question: "3. f(x) = x². Für welche x-Werte ist der Graph streng monoton steigend?", options: ["Für alle x", "Für x < 0", "Für x > 0"], answer: 2, explanation: "f'(x) = 2x. Das ist nur für positive x-Werte größer als 0. (Die rechte Hälfte der Parabel steigt)." },
+          { question: "4. f'(x) = -4. Was bedeutet das für die Monotonie des Graphen von f(x)?", options: ["Er ist überall streng monoton fallend", "Er fällt bis x=-4 und steigt dann", "Er ist konstant"], answer: 0, explanation: "Da f'(x) = -4 immer negativ ist, fällt der Graph überall." },
+          { question: "5. Eine Funktion hat einen Tiefpunkt bei x=3. Welches Monotonieverhalten erwartet man um diesen Punkt?", options: ["Steigt bis 3, fällt ab 3", "Fällt bis 3, steigt ab 3", "Fällt durchgehend"], answer: 1, explanation: "Ein Tiefpunkt sieht aus wie ein Tal. Erst geht es hinab (fallend), dann wieder hinauf (steigend)!" }
+        ]
+      },
+      {
+        id: "extremstellen-vzw",
+        world: 1,
+        category: "Welt 1",
+        title: "1-7: Extremstellen (VZW)",
+        shortDesc: "Hoch- / Tiefpunkte prüfen",
+        mapPos: { x: 75, y: 35 },
+        content: (
+          <div className="space-y-4 text-gray-700">
+            <p>Um Extrempunkte (Hoch- und Tiefpunkte) zu finden, nutzen wir zwei Bedingungen:</p>
+            <p><strong>1. Notwendige Bedingung:</strong> <code>f'(x) = 0</code>. (Tangente ist waagerecht).</p>
+            <p><strong>2. Hinreichende Bedingung (VZW):</strong> Wir prüfen die Steigung f'(x) kurz VOR und kurz NACH der gefundenen Stelle. Ein VZW von <strong>+ nach -</strong> bedeutet erst bergauf, dann bergab ➔ <strong>Hochpunkt</strong>. Ein VZW von <strong>- nach +</strong> ➔ <strong>Tiefpunkt</strong>.</p>
+          </div>
+        ),
+        example: {
+          functionText: "Untersuchung von f(x) = x³ - 3x",
+          calculation: (
+            <ul className="space-y-2 list-disc pl-5">
+              <li><strong>1. f'(x) = 0 setzen:</strong> 3x² - 3 = 0 ➔ x² = 1 ➔ x₁ = 1, x₂ = -1</li>
+              <li><strong>2. VZW bei x₁ = 1 prüfen:</strong> Wir testen x=0 (davor) und x=2 (danach). <br/>f'(0) = -3 (-) und f'(2) = 9 (+). <br/>➔ VZW von Minus nach Plus ➔ <strong>Tiefpunkt bei x=1!</strong></li>
+            </ul>
+          ),
+          visual: (
+            <MathGraph xD={[-2, 3]} yD={[-3, 3]}>
+              <PlotPath fn={x => Math.pow(x,3) - 3*x} xD={[-2, 3]} yD={[-3, 3]} color="#3b82f6" />
+              <PlotPoint x={1} y={-2} xD={[-2, 3]} yD={[-3, 3]} color="#ef4444" label="TP (1|-2)" labelOffset={{x:0, y:20}} />
+              <path d={`M ${mapX(0, [-2,3], 400)} ${mapY(0, [-3,3], 250)} L ${mapX(0.8, [-2,3], 400)} ${mapY(-1.8, [-3,3], 250)}`} fill="none" stroke="#dc2626" strokeWidth="2" markerEnd="url(#arrow)" />
+              <path d={`M ${mapX(1.2, [-2,3], 400)} ${mapY(-1.8, [-3,3], 250)} L ${mapX(2, [-2,3], 400)} ${mapY(2, [-3,3], 250)}`} fill="none" stroke="#16a34a" strokeWidth="2" markerEnd="url(#arrow)" />
+            </MathGraph>
+          )
+        },
+        mistakes: "Berechne nicht nur f'(x)=0! Es könnte auch ein Sattelpunkt sein (wenn es keinen VZW gibt). Ohne Schritt 2 fehlt der Beweis und es gibt Punktabzug.",
+        quiz: [
+          { question: "1. Was ist die 'notwendige Bedingung' für Extremstellen?", options: ["f(x) = 0", "f'(x) = 0", "f''(x) = 0"], answer: 1, explanation: "Richtig! An einem Extrempunkt muss die Tangente waagerecht sein (Steigung 0)." },
+          { question: "2. Ein Vorzeichenwechsel (VZW) der 1. Ableitung von (+) nach (-) bedeutet...?", options: ["Tiefpunkt", "Sattelpunkt", "Hochpunkt"], answer: 2, explanation: "Erst positiv (bergauf), dann negativ (bergab). Das muss ein Hochpunkt (Gipfel) sein!" },
+          { question: "3. Bei f'(x)=0 liegt KEIN Vorzeichenwechsel vor (z.B. von + nach +). Was ist das?", options: ["Tiefpunkt", "Sattelpunkt", "Nullstelle"], answer: 1, explanation: "Ein Terrassenpunkt / Sattelpunkt. Der Graph legt quasi nur eine kurze waagerechte Pause ein und steigt dann weiter." },
+          { question: "4. f(x) = x² - 4x. Bei welchem x-Wert ist die notwendige Bedingung erfüllt?", options: ["x=2", "x=4", "x=-2"], answer: 0, explanation: "Ableitung: f'(x) = 2x - 4. Nullsetzen: 2x - 4 = 0 ➔ 2x = 4 ➔ x = 2." },
+          { question: "5. Prüfe den VZW für x=2 aus der vorherigen Frage. Was ist es?", options: ["Hochpunkt", "Tiefpunkt", "Sattelpunkt"], answer: 1, explanation: "Setze x=1 (davor) in f'(x)=2x-4 ein: -2 (-). Setze x=3 (danach) ein: +2 (+). VZW von - nach + bedeutet Tiefpunkt!" }
+        ]
+      },
+      {
+        id: "extremstellen-2-ableitung",
+        world: 1,
+        category: "Welt 1 (Boss)",
+        title: "1-8: 2. Ableitung",
+        shortDesc: "Krümmung & Smileys",
+        mapPos: { x: 80, y: 5 },
+        isBoss: true,
+        content: (
+          <div className="space-y-4 text-gray-700">
+            <p>Statt dem aufwendigen VZW-Kriterium nutzt man meist die <strong>2. Ableitung f''(x)</strong>. Sie verrät uns die Krümmung (wie ein Smiley).</p>
+            <p>Wenn wir einen Kandidaten x₀ haben (wo f'(x₀)=0 ist), setzen wir ihn in f''(x) ein:</p>
+            <ul className="list-disc pl-5">
+              <li><code>f''(x₀) &gt; 0</code> (positiv): Linkskrümmung 🙂 ➔ <strong>Tiefpunkt</strong></li>
+              <li><code>f''(x₀) &lt; 0</code> (negativ): Rechtskrümmung ☹️ ➔ <strong>Hochpunkt</strong></li>
+            </ul>
+          </div>
+        ),
+        example: {
+          functionText: "f(x) = -x³ + 3x untersuchen",
+          calculation: (
+            <ul className="space-y-2 list-disc pl-5">
+              <li><strong>1. Ableitungen:</strong> f'(x) = -3x² + 3 und f''(x) = -6x</li>
+              <li><strong>2. Notwendige Bed.:</strong> f'(x) = 0 ➔ x₁ = 1, x₂ = -1</li>
+              <li><strong>3. In f''(x) einsetzen:</strong> <br/>
+                Teste x₁ = 1: f''(1) = -6 · 1 = <strong>-6 &lt; 0</strong> ➔ Rechtskrümmung ☹️ ➔ <strong>Hochpunkt</strong>. <br/>
+                Teste x₂ = -1: f''(-1) = <strong>6 &gt; 0</strong> ➔ Linkskrümmung 🙂 ➔ <strong>Tiefpunkt</strong>.
+              </li>
+            </ul>
+          ),
+          visual: (
+            <MathGraph xD={[-3, 3]} yD={[-4, 4]}>
+              <PlotPath fn={x => -1*Math.pow(x,3) + 3*x} xD={[-3, 3]} yD={[-4, 4]} color="#3b82f6" />
+              <PlotPoint x={1} y={2} xD={[-3, 3]} yD={[-4, 4]} color="#1e293b" />
+              <PlotPoint x={-1} y={-2} xD={[-3, 3]} yD={[-4, 4]} color="#1e293b" />
+            </MathGraph>
+          )
+        },
+        mistakes: "Verwechslungsgefahr: Viele denken 'größer als Null (> 0) ist ein Hochpunkt, weil es positiv ist'. Es ist genau andersherum (denk an den Smiley: Positiv = lacht = Tiefpunkt)!",
+        quiz: [
+          { question: "1. Was verrät uns die zweite Ableitung f''(x) geometrisch?", options: ["Die y-Werte", "Das Krümmungsverhalten (Links/Rechtskurve)", "Die Steigung"], answer: 1, explanation: "Richtig! Sie gibt an, ob die Kurve linksgekrümmt (Smiley) oder rechtsgekrümmt (traurig) ist." },
+          { question: "2. Wir finden f'(x₀)=0 und f''(x₀) < 0 (negativ). Was ist es?", options: ["Hochpunkt", "Tiefpunkt", "Wendepunkt"], answer: 0, explanation: "Negativ bedeutet trauriger Smiley (Rechtskrümmung). Die höchste Stelle vom traurigen Mund ist ein Hochpunkt!" },
+          { question: "3. f(x) = x². Berechne f''(x).", options: ["2x", "2", "0"], answer: 1, explanation: "f'(x) = 2x. Das noch einmal abgeleitet ergibt f''(x) = 2." },
+          { question: "4. f(x) = x³ - 3x. Wir wissen f'(1)=0. Prüfe mit der 2. Ableitung, was bei x=1 liegt!", options: ["Hochpunkt", "Tiefpunkt", "Sattelpunkt"], answer: 1, explanation: "f'(x)=3x²-3, f''(x)=6x. Setze x=1 ein: f''(1) = 6. Da 6 > 0 ist (positiv, Smiley), liegt ein Tiefpunkt vor!" },
+          { question: "5. Boss-Frage: Was passiert, wenn f''(x₀) genau 0 ergibt?", options: ["Es ist 100% ein Sattelpunkt", "Es ist 100% ein Wendepunkt", "Das Kriterium versagt, man muss das Vorzeichenwechsel-Kriterium nutzen"], answer: 2, explanation: "Perfekt! f''=0 liefert keine eindeutige Aussage für Extremstellen. Man MUSS dann die Tabelle mit dem Vorzeichenwechsel (VZW) machen!" }
+        ]
+      },
+
+      // ================= WELT 2 (Klausur-Training) =================
+      {
+        id: "klausur-ableiten",
+        world: 2,
+        category: "Welt 2 (Training)",
+        title: "2-1: Ableitungs-Bootcamp",
+        shortDesc: "Schwere Terme ableiten",
+        mapPos: { x: 20, y: 75 },
+        content: (
+          <div className="space-y-4 text-gray-700">
+            <p>Willkommen in der Klausur-Welt! Hier wird es ernst. In Klausuren sehen Funktionen oft etwas ekliger aus, weil Parameter (wie <span className="font-mono">a</span> oder <span className="font-mono">k</span>) auftauchen oder Brüche verwendet werden.</p>
+            <p><strong>Die wichtigste Regel für Parameter:</strong> Ein Buchstabe, der nicht "x" ist, wird beim Ableiten (nach x) behandelt wie eine ganz normale Zahl! Steht er als Faktor davor, bleibt er erhalten. Steht er alleine, fällt er weg.</p>
+          </div>
+        ),
+        example: {
+          functionText: "f(x) = ax³ - 4x + a",
+          calculation: (
+            <ul className="space-y-2 list-disc pl-5">
+              <li><strong>Schritt 1 (ax³):</strong> Die 3 wandert nach vorn. Das 'a' bleibt als Faktor einfach stehen ➔ <strong>3ax²</strong></li>
+              <li><strong>Schritt 2 (-4x):</strong> x fällt weg ➔ <strong>-4</strong></li>
+              <li><strong>Schritt 3 (+a):</strong> Das 'a' steht alleine (ohne x). Es ist eine Konstante und fällt beim Ableiten komplett weg! ➔ <strong>0</strong></li>
+              <li><strong>Ergebnis: f'(x) = 3ax² - 4</strong></li>
+            </ul>
+          ),
+          visual: (
+            <MathGraph xD={[-3, 3]} yD={[-5, 5]}>
+              <PlotPath fn={x => 1*Math.pow(x,3) - 4*x + 1} xD={[-3, 3]} yD={[-5, 5]} color="#f97316" />
+              <PlotPath fn={x => 3*1*Math.pow(x,2) - 4} xD={[-3, 3]} yD={[-5, 5]} color="#ef4444" dashed />
+              <text x={mapX(-2, [-3,3], 400)} y={mapY(4, [-5,5], 250)} fontSize="12" fill="#f97316">f(x) mit a=1</text>
+              <text x={mapX(-2, [-3,3], 400)} y={mapY(2, [-5,5], 250)} fontSize="12" fill="#ef4444">f'(x) mit a=1</text>
+            </MathGraph>
+          )
+        },
+        mistakes: "Lass dich nicht von Parametern verwirren. Behandle das 'a' in deinem Kopf einfach wie eine 5.",
+        quiz: [
+          { question: "1. Leite ab: f(x) = k · x²", options: ["2k · x", "2x", "k² · x"], answer: 0, explanation: "Die 2 wandert nach vorn, das k bleibt stehen. -> 2kx." },
+          { question: "2. Leite ab: f(x) = x³ + t", options: ["3x² + 1", "3x² + t", "3x²"], answer: 2, explanation: "Das t ist eine Zahl ohne x. Konstanten fallen beim Ableiten komplett weg!" },
+          { question: <span>3. Leite ab: f(x) = <Fraction num="1" den="4" />x⁴ - tx²</span>, options: ["x³ - t", "x³ - 2tx", "x³ - tx"], answer: 1, explanation: "4*(1/4) = 1. Und beim zweiten Teil: Die 2 wandert nach vorn zum t -> 2tx." },
+          { question: <span>4. Leite ab: f(x) = <Fraction num="x³" den="3" /> (Tipp: Das ist das Gleiche wie <Fraction num="1" den="3" /> · x³)</span>, options: ["x²", <span><Fraction num="3x²" den="3" /></span>, "1"], answer: 0, explanation: "Die 3 wandert nach vorn und kürzt sich mit dem Drittel weg. Es bleibt 1x²." },
+          { question: "5. Leite ab: f(x) = ax² - bx + c", options: ["2ax - b + c", "2ax - b", "ax - b"], answer: 1, explanation: "Perfekt! 2ax. Das x bei -bx fällt weg, bleibt -b. Das c steht alleine und fällt auf 0." }
+        ]
+      },
+      {
+        id: "klausur-kurvendiskussion",
+        world: 2,
+        category: "Welt 2 (Training)",
+        title: "2-2: Die Kurvendiskussion",
+        shortDesc: "Das komplette Rezept",
+        mapPos: { x: 50, y: 40 },
+        content: (
+          <div className="space-y-4 text-gray-700">
+            <p>Die <strong>Kurvendiskussion</strong> ist das Herzstück jeder Analysis-Klausur. Sie verlangt von dir, eine Funktion einmal komplett zu durchleuchten. Das ist eigentlich nur ein striktes Abarbeiten von Rezepten!</p>
+            <p><strong>Dein Fahrplan:</strong><br/>1. Ableitungen bilden (f', f'')<br/>2. Nullstellen ( f(x) = 0 )<br/>3. Extremstellen ( f'(x) = 0 und f'' prüfen )<br/>4. Monotonie / Skizze</p>
+          </div>
+        ),
+        example: {
+          functionText: "Aufgabe: Untersuche f(x) = x³ - 3x²",
+          calculation: (
+            <ul className="space-y-2 list-disc pl-5">
+              <li><strong>1. Ableitungen:</strong> f'(x)=3x²-6x, f''(x)=6x-6</li>
+              <li><strong>2. Nullstellen (f(x)=0):</strong> x³-3x² = 0. x² ausklammern! x²(x-3)=0. <br/>➔ N₁(0|0) und N₂(3|0).</li>
+              <li><strong>3. Extremstellen (f'(x)=0):</strong> 3x²-6x = 0. x(3x-6)=0. <br/>➔ x₁=0, x₂=2. <br/>In f'' einsetzen: f''(0)=-6 (HP), f''(2)=6 (TP).</li>
+            </ul>
+          ),
+          visual: (
+            <MathGraph xD={[-1, 4]} yD={[-5, 2]}>
+              <PlotPath fn={x => Math.pow(x,3) - 3*Math.pow(x,2)} xD={[-1, 4]} yD={[-5, 2]} color="#b91c1c" strokeWidth={3} />
+              <PlotPoint x={0} y={0} xD={[-1, 4]} yD={[-5, 2]} color="#1e293b" label="HP & N₁" labelOffset={{x:-30, y:-10}} />
+              <PlotPoint x={3} y={0} xD={[-1, 4]} yD={[-5, 2]} color="#1e293b" label="N₂" labelOffset={{x:15, y:-10}} />
+              <PlotPoint x={2} y={-4} xD={[-1, 4]} yD={[-5, 2]} color="#1e293b" label="TP" labelOffset={{x:0, y:20}} />
+            </MathGraph>
+          )
+        },
+        mistakes: "Oft wird vergessen, am Ende die gefundenen x-Werte (z.B. x=2) in die GANZ NORMALE Funktion f(x) einzusetzen, um die y-Koordinate für den Tiefpunkt zu berechnen (TP(2 | -4)).",
+        quiz: [
+          { question: "1. Mit welchem Ansatz berechnet man die Nullstellen einer Funktion?", options: ["f'(x) = 0", "f(x) = 0", "f''(x) = 0"], answer: 1, explanation: "Richtig! Nullstellen sind die Schnittpunkte mit der x-Achse, dort ist die Höhe (der y-Wert) null." },
+          { question: "2. Wir haben x³ - 4x = 0. Was ist der beste nächste Schritt?", options: ["pq-Formel", "Wurzel ziehen", "x ausklammern"], answer: 2, explanation: "Ausklammern! x(x² - 4) = 0. So erhältst du sofort x₁=0 und kannst für die Klammer den Rest lösen." },
+          { question: "3. Bei f'(x) = 0 bekommen wir x = 2 heraus. In welche Funktion setzen wir die 2 ein, um zu prüfen ob es ein HP oder TP ist?", options: ["f(x)", "f'(x)", "f''(x)"], answer: 2, explanation: "Die zweite Ableitung verrät dir das Krümmungsverhalten (Smileys)!" },
+          { question: "4. Wir haben herausgefunden, dass bei x=2 ein Tiefpunkt ist. Wie finden wir die y-Koordinate dieses Punktes heraus?", options: ["2 in f(x) einsetzen", "2 in f''(x) einsetzen", "Sie ist immer 0"], answer: 0, explanation: "Um echte Punkte (Höhen) im Koordinatensystem zu berechnen, nutzen wir immer die normale Funktion f(x)!" },
+          { question: "5. Der Punkt TP(2 | -4) wurde gefunden. Was bedeutet das für das Monotonieverhalten um x=2?", options: ["Fällt, dann fällt", "Steigt, dann fällt", "Fällt, dann steigt"], answer: 2, explanation: "Ein Tiefpunkt (Tal) bedeutet: Es geht erst bergab, dann bergauf!" }
+        ]
+      },
+      {
+        id: "klausur-anwendung",
+        world: 2,
+        category: "Welt 2 (Endboss)",
+        title: "2-3: Die Sachaufgabe",
+        shortDesc: "Raketen & Wasserballons",
+        mapPos: { x: 80, y: 15 },
+        isBoss: true,
+        content: (
+          <div className="space-y-4 text-gray-700">
+            <p>Der Endboss jeder Klausur: Ein Text! Du musst deutsche Sätze in mathematische Gleichungen übersetzen. Merke dir das Vokabular:</p>
+            <ul className="list-disc pl-5">
+              <li>"Wann schlägt die Rakete auf dem Boden auf?" ➔ <strong>Nullstelle</strong> suchen (Höhe = 0).</li>
+              <li>"Wie hoch fliegt sie maximal?" ➔ <strong>Hochpunkt</strong> suchen.</li>
+              <li>"Wie schnell steigt sie ganz am Anfang?" ➔ <strong>Ableitung (Steigung)</strong> bei x=0 berechnen: f'(0).</li>
+            </ul>
+          </div>
+        ),
+        example: {
+          functionText: "Eine Rakete fliegt: h(t) = -5t² + 40t",
+          calculation: (
+            <ul className="space-y-2 list-disc pl-5">
+              <li>t = Zeit in Sekunden, h(t) = Höhe in Metern.</li>
+              <li><strong>Aufgabe A: Wann schlägt sie auf?</strong><br/>-5t² + 40t = 0 ➔ t(-5t+40)=0 ➔ t₁=0 (Start), t₂=8. <strong>Nach 8 Sekunden.</strong></li>
+              <li><strong>Aufgabe B: Höchster Punkt?</strong><br/>h'(t) = -10t + 40 = 0 ➔ 10t = 40 ➔ t=4.<br/>Höhe berechnen: h(4) = -5(16) + 40(4) = -80 + 160 = <strong>80 Meter</strong>.</li>
+            </ul>
+          ),
+          visual: (
+            <MathGraph xD={[0, 10]} yD={[-10, 100]}>
+              <PlotPath fn={x => -5*Math.pow(x,2) + 40*x} xD={[0, 10]} yD={[-10, 100]} color="#f97316" strokeWidth={3} />
+              <PlotPoint x={0} y={0} xD={[0, 10]} yD={[-10, 100]} color="#1e293b" label="Start (t=0)" labelOffset={{x:10, y:20}} />
+              <PlotPoint x={8} y={0} xD={[0, 10]} yD={[-10, 100]} color="#1e293b" label="Aufschlag (t=8)" labelOffset={{x:0, y:20}} />
+              <PlotPoint x={4} y={80} xD={[0, 10]} yD={[-10, 100]} color="#ef4444" label="Max. Höhe 80m" labelOffset={{x:0, y:-10}} />
+              <PlotLine x1={4} y1={0} x2={4} y2={80} xD={[0,10]} yD={[-10,100]} color="#64748b" dashed />
+            </MathGraph>
+          )
+        },
+        mistakes: <span>Achte genau auf die Einheiten! Wenn die x-Achse Sekunden und die y-Achse Meter ist, dann gibt die Ableitung f'(x) <span className="font-normal">(die Steigung <span className="inline-flex items-center">m = <Fraction num="y" den="x" /></span>)</span> Meter pro Sekunde an – also die Geschwindigkeit!</span>,
+        quiz: [
+          { question: "1. Eine Funktion g(x) beschreibt den Gewinn einer Firma. Was berechnest du, wenn gefragt wird: 'Wann macht die Firma am meisten Gewinn?'", options: ["Die Nullstellen", "Den Hochpunkt", "Die Ableitung an der Stelle 0"], answer: 1, explanation: "Maximaler Gewinn = höchster Punkt des Graphen = Hochpunkt!" },
+          { question: "2. f(t) ist die Höhe eines geworfenen Balls. Was bedeutet f(0)?", options: ["Die Zeit bis zum Aufprall", "Die Abwurfhöhe zum Zeitpunkt t=0", "Die Startgeschwindigkeit"], answer: 1, explanation: "f(0) bedeutet, wir setzen die Zeit t=0 (den Start) ein und erhalten die zugehörige Höhe y." },
+          { question: "3. f(t) ist wieder die Höhe. Was berechnet f'(0)?", options: ["Die Abwurfhöhe", "Die Zeit beim höchsten Punkt", "Die Startgeschwindigkeit (Steigung am Anfang)"], answer: 2, explanation: "Perfekt! Die Ableitung ist die Steigung (Änderungsrate). Am Anfang (t=0) ist das die Startgeschwindigkeit." },
+          { question: "4. Wie übersetzt du die Frage: 'Zu welchem Zeitpunkt hat der Ball eine Geschwindigkeit von 15 m/s?'", options: ["f(15) berechnen", "f'(t) = 15 lösen", "f(t) = 15 lösen"], answer: 1, explanation: "Geschwindigkeit ist die Ableitung. Wir suchen also das t, bei dem f'(t) exakt 15 ist." },
+          { question: "5. Der Endboss: Eine Bakterienkultur wächst nach N(t) = -t³ + 12t² + 100. Wann wachsen die Bakterien am schnellsten?", options: ["Beim Hochpunkt von N(t)", "Beim Wendepunkt (wo f''(t)=0 ist)", "Bei t=0"], answer: 1, explanation: "Wahnsinn, du hast es durchschaut! 'Am schnellsten wachsen' bedeutet maximale Steigung. Die steilste Stelle eines Graphen ist mathematisch der Wendepunkt!" }
         ]
       }
     ];
@@ -191,14 +596,17 @@
     function App() {
       const [view, setView] = useState('home'); 
       const [currentTopicId, setCurrentTopicId] = useState(null);
+      
       const [xp, setXp] = useState(0);
       const [completedTopics, setCompletedTopics] = useState([]);
       const [showLevelUp, setShowLevelUp] = useState(false);
-      const [errorCount, setErrorCount] = useState(0); 
+      const [errorCount, setErrorCount] = useState(0);
+      
       const [activeQuizIndex, setActiveQuizIndex] = useState(0);
       const [selectedQuizAnswer, setSelectedQuizAnswer] = useState(null);
       const [quizResult, setQuizResult] = useState(null);
       const [topicScore, setTopicScore] = useState(0);
+
       const [activeWorld, setActiveWorld] = useState(1);
 
       const world1Topics = topicsData.filter(t => t.world === 1);
@@ -287,71 +695,126 @@
 
       return (
         <div className="min-h-screen font-sans text-slate-800 bg-slate-900 pb-10">
+          
+          {/* HEADER */}
           <header className="bg-white sticky top-0 z-50 border-b-4 border-slate-300 shadow-md">
             <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
               <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setView('home')}>
-                <div className="bg-red-600 p-2.5 rounded-xl border-b-4 border-red-800 shadow-sm flex items-center justify-center">
-                  <span className="font-black text-white text-xl leading-none px-1">M</span>
+                <div className="bg-red-600 p-2.5 rounded-xl border-b-4 border-red-800 shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center">
+                  <span className="font-black text-white text-xl leading-none px-1" style={{ textShadow: '1px 1px 0 #7f1d1d' }}>M</span>
                 </div>
-                <div><h1 className="font-black text-2xl leading-tight text-slate-800">Klausur-Welt</h1></div>
+                <div>
+                  <h1 className="font-black text-2xl leading-tight text-slate-800 tracking-tight">Klausur-Welt</h1>
+                </div>
               </div>
+
               <div className="flex items-center space-x-4">
                 <div className="text-right hidden sm:block">
                   <div className="text-sm font-black text-slate-800 uppercase tracking-wide">Level {currentLevel}</div>
                   <div className="text-xs font-bold text-slate-500">{xp} / {xpForNextLevel} XP</div>
                 </div>
                 <div className="w-24 sm:w-32 h-5 bg-slate-800 rounded-full overflow-hidden border-2 border-slate-900 relative">
-                  <div className="h-full bg-gradient-to-r from-yellow-400 to-yellow-200" style={{ width: `${(xp % 150) / 150 * 100}%` }} />
+                  <div 
+                    className="h-full bg-gradient-to-r from-yellow-400 to-yellow-200 transition-all duration-500 ease-out"
+                    style={{ width: `${(xp % 150) / 150 * 100}%` }}
+                  />
                 </div>
               </div>
             </div>
           </header>
 
+          {/* LEVEL UP NOTIFICATION */}
           {showLevelUp && (
-            <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 bg-yellow-400 text-slate-900 px-8 py-4 rounded-xl shadow-2xl border-4 border-white flex items-center">
-              <Star className="text-2xl mr-2" />
+            <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 bg-yellow-400 text-slate-900 px-8 py-4 rounded-xl shadow-2xl flex items-center space-x-3 animate-bounce border-4 border-white">
+              <Star className="w-8 h-8 fill-slate-900" />
               <span className="font-black text-2xl tracking-wider uppercase">Level Up! Lvl {currentLevel}</span>
             </div>
           )}
 
+          {/* MAIN CONTENT */}
           <main className="w-full max-w-md md:max-w-3xl mx-auto mt-4 rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-800 bg-white relative">
+            
+            {/* VIEW: WORLD MAP DASHBOARD */}
             {view === 'home' && (
-              <div className={`w-full h-[700px] sm:h-[800px] relative overflow-hidden ${isWorld2Dark ? 'bg-gradient-to-b from-orange-600 to-red-900' : 'bg-gradient-to-b from-sky-400 to-sky-200'}`}>
+              <div className={`w-full h-[700px] sm:h-[800px] relative overflow-hidden transition-colors duration-1000 ${isWorld2Dark ? 'bg-gradient-to-b from-orange-600 to-red-900' : 'bg-gradient-to-b from-sky-400 to-sky-200'}`}>
+                
+                {/* Background Decorations */}
                 <Cloud style={{ top: '10%', left: '10%', transform: 'scale(1.2)' }} delay="0s" isDark={isWorld2Dark} />
                 <Cloud style={{ top: '25%', right: '5%', transform: 'scale(0.8)' }} delay="2s" isDark={isWorld2Dark} />
+                <Cloud style={{ top: '50%', left: '20%', transform: 'scale(1.5)' }} delay="1s" isDark={isWorld2Dark} />
+                <Cloud style={{ top: '75%', right: '15%', transform: 'scale(1)' }} delay="3s" isDark={isWorld2Dark} />
+
                 <Hill style={{ left: '-10%', bottom: '0', transform: 'scale(1.5)', transformOrigin: 'bottom' }} isDark={isWorld2Dark} />
                 <Hill style={{ right: '-20%', bottom: '0', transform: 'scale(2)', transformOrigin: 'bottom' }} isDark={isWorld2Dark} />
+                <Hill style={{ left: '20%', bottom: '0', transform: 'scale(1.2)', transformOrigin: 'bottom' }} isDark={isWorld2Dark} />
+                <div className={`absolute bottom-0 w-full h-16 border-t-8 z-0 transition-colors duration-1000 ${isWorld2Dark ? 'bg-slate-900 border-slate-950' : 'bg-green-500 border-green-600'}`}></div>
                 
-                <div className="absolute top-4 left-4 z-20 bg-slate-800/90 border-2 border-slate-900 px-3 py-1.5 rounded-lg">
-                  <span className="font-black text-xs text-white uppercase">{activeWorld === 1 ? "Welt 1: Grundlagen" : "Welt 2: Training"}</span>
+                {/* World Title */}
+                <div className="absolute top-4 left-4 z-20 bg-slate-800/90 backdrop-blur border-2 border-slate-900 px-3 py-1.5 rounded-lg shadow-md">
+                  <span className="font-black text-xs sm:text-sm text-white uppercase tracking-widest">
+                    {activeWorld === 1 ? "Welt 1: Grundlagen" : "Welt 2: Klausur-Training"}
+                  </span>
                 </div>
 
-                <div className="absolute top-4 right-4 z-20 bg-white/90 border-2 border-slate-800 px-3 py-2 rounded-xl flex flex-col gap-1 w-32">
-                  <div className="flex justify-between text-xs font-black">
-                     <span>Fortschritt</span><span>{progressPercent}%</span>
+                {/* Progress Bar mit verstecktem Fehler-Counter */}
+                <div className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur border-2 border-slate-800 px-3 py-2 rounded-xl shadow-lg flex flex-col gap-1 w-32 sm:w-44">
+                  <div className="flex justify-between items-end leading-none mb-0.5">
+                     <span className="font-black text-[10px] sm:text-xs text-slate-800 uppercase">Fortschritt</span>
+                     <span className="font-black text-[10px] sm:text-xs text-slate-600">{progressPercent}%</span>
                   </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full border border-slate-800">
-                    <div className={`h-full ${progressPercent === 100 ? 'bg-yellow-400' : 'bg-green-500'}`} style={{ width: `${progressPercent}%` }} />
+                  <div className="w-full h-2 sm:h-2.5 bg-slate-200 rounded-full overflow-hidden border border-slate-800">
+                    <div
+                      className={`h-full transition-all duration-1000 ease-out ${progressPercent === 100 ? 'bg-yellow-400' : 'bg-green-500'}`}
+                      style={{ width: `${progressPercent}%` }}
+                    />
                   </div>
+                  {/* Der Fehlerzähler wird nur bei 100% eingeblendet */}
+                  {progressPercent === 100 && (
+                    <div className="mt-1 pt-1 border-t-2 border-slate-200 flex justify-between items-center text-[10px] sm:text-xs font-black animate-in fade-in zoom-in duration-500">
+                      <span className="text-slate-500 uppercase tracking-wider">Fehler gesamt:</span>
+                      <span className="text-red-600">{errorCount}</span>
+                    </div>
+                  )}
                 </div>
 
+                {/* WORLD NAVIGATION BUTTONS */}
                 {activeWorld === 1 && isWorld1Complete && (
-                  <button onClick={() => setActiveWorld(2)} className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-red-600 text-white font-black px-4 py-3 rounded-xl border-4 border-slate-900 flex flex-col items-center">
-                    <Skull className="text-2xl mb-1" /><span className="text-xs">Zu Welt 2</span>
+                  <button 
+                    onClick={() => setActiveWorld(2)} 
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-red-600 hover:bg-red-500 border-4 border-slate-900 text-white font-black px-4 py-3 rounded-xl shadow-[0_6px_0_#7f1d1d] active:translate-y-1 active:shadow-none transition-all flex flex-col items-center animate-pulse"
+                  >
+                    <Skull className="w-6 h-6 mb-1" />
+                    <span className="text-xs uppercase">Zu Welt 2</span>
                   </button>
                 )}
                 {activeWorld === 2 && (
-                  <button onClick={() => setActiveWorld(1)} className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-sky-500 text-white font-black px-4 py-3 rounded-xl border-4 border-slate-900 flex flex-col items-center">
-                    <ArrowLeft className="text-2xl mb-1" /><span className="text-xs">Zu Welt 1</span>
+                  <button 
+                    onClick={() => setActiveWorld(1)} 
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-sky-500 hover:bg-sky-400 border-4 border-slate-900 text-white font-black px-4 py-3 rounded-xl shadow-[0_6px_0_#0284c7] active:translate-y-1 active:shadow-none transition-all flex flex-col items-center"
+                  >
+                    <ArrowLeft className="w-6 h-6 mb-1" />
+                    <span className="text-xs uppercase">Zu Welt 1</span>
                   </button>
                 )}
 
+                {/* THE MAP CANVAS */}
                 <div className="absolute inset-0 z-10 px-8 py-20 pointer-events-none">
                   <div className="relative w-full h-full pointer-events-auto">
-                    <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
-                      <path d={generatePathD()} stroke={isWorld2Dark ? "#7f1d1d" : "#b45309"} strokeWidth="4" fill="none" strokeDasharray="0 8" />
+                    
+                    {/* 1. Der gestrichelte Pfad */}
+                    <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full overflow-visible pointer-events-none drop-shadow-md" preserveAspectRatio="none">
+                      <path d={generatePathD()} stroke={isWorld2Dark ? "#7f1d1d" : "#b45309"} strokeWidth="4" fill="none" strokeDasharray="0 8" strokeLinecap="round" transform="translate(0, 1)" vectorEffect="non-scaling-stroke"/>
+                      <path d={generatePathD()} stroke={isWorld2Dark ? "#fca5a5" : "#fef08a"} strokeWidth="4" fill="none" strokeDasharray="0 8" strokeLinecap="round" vectorEffect="non-scaling-stroke"/>
                     </svg>
 
+                    {/* Startschild */}
+                    {activeWorld === 1 && (
+                      <div className="absolute font-black text-white bg-red-600 border-2 border-white px-2 py-1 rounded shadow-md text-xs transform -rotate-12" style={{ left: '5%', top: '92%' }}>
+                        START
+                      </div>
+                    )}
+
+                    {/* 2. Die Level-Buttons */}
                     {currentWorldTopicsData.map((topic) => {
                       const globalIndex = topicsData.findIndex(t => t.id === topic.id);
                       const isComplete = completedTopics.includes(topic.id);
@@ -359,20 +822,69 @@
                       const isLocked = isLevelLocked(globalIndex);
                       
                       return (
-                        <div key={topic.id} className="absolute -translate-x-1/2 -translate-y-1/2 z-20 group" style={{ left: `${topic.mapPos.x}%`, top: `${topic.mapPos.y}%` }}>
-                          <button onClick={() => { if (!isLocked) openTopic(topic.id); }} className={`focus:outline-none transition-all ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+                        <div 
+                          key={topic.id}
+                          className="absolute transform -translate-x-1/2 -translate-y-1/2 group focus:outline-none z-20"
+                          style={{ left: `${topic.mapPos.x}%`, top: `${topic.mapPos.y}%` }}
+                        >
+                          {/* --- PREVIEW CARD (Vorschau beim Hover) --- */}
+                          {!isLocked && (
+                            <div className="absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2 w-48 bg-white rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none border-4 border-slate-800 z-50 scale-95 group-hover:scale-100 origin-bottom">
+                               <div className={`text-white p-1.5 text-center rounded-t-md font-black text-[10px] uppercase tracking-widest ${topic.isBoss ? 'bg-red-600' : 'bg-slate-800'}`}>
+                                 {topic.category}
+                               </div>
+                               <div className="p-3 text-center">
+                                  <div className="font-black text-sm mb-1 leading-tight text-slate-800">{topic.title}</div>
+                                  <div className="text-xs text-slate-500 font-bold mb-2">{topic.shortDesc}</div>
+                                  <div className={`text-[10px] font-black uppercase py-1 px-2 rounded-lg border-2 ${
+                                    isComplete ? 'bg-green-100 text-green-700 border-green-300' : 
+                                    isNext ? 'bg-yellow-100 text-yellow-700 border-yellow-300 animate-pulse' : 
+                                    'bg-slate-100 text-slate-400 border-slate-200'
+                                  }`}>
+                                    {isComplete ? '100% Geklärt' : isNext ? 'Jetzt spielen!' : 'Noch gesperrt'}
+                                  </div>
+                               </div>
+                               <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-transparent border-t-slate-800"></div>
+                            </div>
+                          )}
+
+                          {/* --- DER EIGENTLICHE BUTTON --- */}
+                          <button 
+                            onClick={() => { if (!isLocked) openTopic(topic.id); }} 
+                            className={`focus:outline-none transition-all ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                          >
                             {topic.isBoss ? (
-                              <div className={`relative w-16 h-16 rounded-xl border-4 flex items-center justify-center ${isComplete ? 'border-yellow-400 bg-yellow-100' : isLocked ? 'border-slate-700 bg-slate-800' : 'border-slate-800 bg-red-600'}`}>
-                                {activeWorld === 2 ? <Skull className="text-3xl" /> : <Castle className="text-3xl" />}
-                                {isLocked && <Lock className="absolute -top-2 -right-2 text-xl" />}
-                                {isComplete && <Star className="absolute -top-4 -right-4 text-2xl" />}
+                              <div className={`
+                                relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-4 shadow-xl flex items-center justify-center transition-all z-20
+                                ${isComplete ? 'border-yellow-400 bg-yellow-100' : isLocked ? 'border-slate-700 bg-slate-800 opacity-90' : 'border-slate-800 bg-red-600'}
+                                ${isNext ? 'animate-bounce border-yellow-400 bg-red-500 scale-110' : (!isLocked && 'hover:-translate-y-2')}
+                              `} style={{ boxShadow: isComplete ? '0 6px 0 #ca8a04' : isLocked ? '0 6px 0 #334155' : '0 6px 0 #7f1d1d' }}>
+                                {activeWorld === 2 ? (
+                                   <Skull className={`w-8 h-8 sm:w-10 sm:h-10 ${isComplete ? 'text-yellow-500' : isLocked ? 'text-slate-500' : 'text-white'}`} />
+                                ) : (
+                                   <Castle className={`w-8 h-8 sm:w-10 sm:h-10 ${isComplete ? 'text-yellow-500' : isLocked ? 'text-slate-500' : 'text-white'}`} />
+                                )}
+                                
+                                {isLocked && <Lock className="absolute -top-2 -right-2 w-6 h-6 text-slate-400" />}
+                                {isComplete && <Star className="absolute -top-4 -right-4 w-8 h-8 text-yellow-400 fill-yellow-400 drop-shadow-md" />}
                               </div>
                             ) : (
-                              <div className={`relative w-10 h-10 rounded-full border-4 flex items-center justify-center ${isComplete ? 'bg-green-500 border-white' : isNext ? 'bg-yellow-400 border-white animate-bounce' : 'bg-slate-300 border-slate-400'}`}>
-                                {isComplete ? <CheckCircle2 className="text-xl" /> : isNext ? <Play className="text-xl" /> : <Lock className="text-sm" />}
+                              <div className={`
+                                relative w-10 h-10 sm:w-12 sm:h-12 rounded-full border-4 flex items-center justify-center transition-all z-20
+                                ${isComplete ? 'bg-green-500 border-white' : isNext ? 'bg-yellow-400 border-white animate-bounce' : 'bg-slate-300 border-slate-400 opacity-90'}
+                                ${(!isNext && !isLocked) ? 'hover:-translate-y-1 hover:scale-105' : ''}
+                              `} style={{ boxShadow: isComplete ? '0 4px 0 #15803d' : isNext ? '0 4px 0 #ca8a04, 0 0 15px #fef08a' : '0 4px 0 #94a3b8' }}>
+                                {isComplete ? (
+                                   <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                                ) : isNext ? (
+                                   <Play className="w-4 h-4 sm:w-5 sm:h-5 text-slate-800 fill-slate-800 ml-1" />
+                                ) : (
+                                   <Lock className="w-4 h-4 sm:w-4 sm:h-4 text-slate-500" />
+                                )}
                               </div>
                             )}
                           </button>
+
                         </div>
                       );
                     })}
@@ -381,87 +893,158 @@
               </div>
             )}
 
+            {/* VIEW: TOPIC DETAIL (LEARNING & QUIZ) */}
             {view === 'topic' && currentTopic && (
-              <div className="w-full bg-white">
-                <div className={`p-6 text-white relative border-b-8 ${currentTopic.world === 2 ? 'bg-red-900 border-red-950' : 'bg-slate-800 border-slate-900'}`}>
-                  <button onClick={() => setView('home')} className="absolute top-4 right-4 bg-white/20 p-2 rounded-full"><ArrowLeft /></button>
-                  <div className="flex items-center gap-4">
-                    <div className="bg-white/10 p-3 rounded-xl">{currentTopic.isBoss ? <Castle className="text-3xl" /> : <Map className="text-3xl" />}</div>
+              <div className="w-full bg-white animate-in slide-in-from-right-8 duration-300">
+                {/* Header */}
+                <div className={`p-6 sm:p-8 text-white relative overflow-hidden border-b-8 ${currentTopic.world === 2 ? 'bg-red-900 border-red-950' : 'bg-slate-800 border-slate-900'}`}>
+                  <button 
+                    onClick={() => setView('home')}
+                    className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 p-2 rounded-full transition-colors"
+                  >
+                    <ArrowLeft className="w-6 h-6 text-white" />
+                  </button>
+                  
+                  <div className="relative z-10 flex items-center gap-4">
+                    <div className="bg-white/10 p-3 rounded-xl shrink-0">
+                      {currentTopic.isBoss ? <Castle className="w-8 h-8 text-yellow-400" /> : <Map className="w-8 h-8 text-sky-400" />}
+                    </div>
                     <div>
-                      <span className="uppercase text-slate-400 font-black text-xs">{currentTopic.category}</span>
-                      <h2 className="text-2xl font-black">{currentTopic.title}</h2>
+                      <span className="uppercase text-slate-400 font-black text-xs tracking-widest block mb-1">{currentTopic.category}</span>
+                      <h2 className="text-2xl sm:text-3xl font-black leading-tight">{currentTopic.title}</h2>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 space-y-10">
-                  <div className="prose prose-lg text-slate-700 text-lg">{currentTopic.content}</div>
+                <div className="p-6 sm:p-8 space-y-10">
+                  
+                  {/* Basis-Erklärung */}
+                  <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed text-lg">
+                    {currentTopic.content}
+                  </div>
 
+                  {/* KONKRETES BEISPIEL */}
                   {currentTopic.example && (
-                    <div className="bg-sky-50 border-4 border-sky-200 rounded-2xl overflow-hidden">
+                    <div className="bg-sky-50 border-4 border-sky-200 rounded-2xl overflow-hidden shadow-sm">
                       <div className="bg-sky-200 px-5 py-3 flex items-center gap-3">
-                        <BookMarked className="text-xl" /><h3 className="text-lg font-black text-sky-900 uppercase">Beispiel-Level</h3>
+                        <BookMarked className="w-5 h-5 text-sky-800" />
+                        <h3 className="text-lg font-black text-sky-900 uppercase tracking-wide">Beispiel-Level</h3>
                       </div>
+                      
                       <div className="p-5 space-y-6">
                         <div className="bg-white border-2 border-sky-200 rounded-xl p-3 text-center">
-                          <span className="font-mono text-lg font-black text-slate-800">{currentTopic.example.functionText}</span>
+                          <span className="font-mono text-lg font-black text-slate-800">
+                            {currentTopic.example.functionText}
+                          </span>
                         </div>
-                        <div className="grid md:grid-cols-2 gap-6">
-                          <div className="text-slate-700 bg-white p-4 rounded-xl border-2">{currentTopic.example.calculation}</div>
-                          <div className="bg-white rounded-xl p-2">{currentTopic.example.visual}</div>
+
+                        <div className="grid md:grid-cols-2 gap-6 items-start">
+                          <div className="text-slate-700 bg-white p-4 rounded-xl border-2 border-slate-100 shadow-sm h-full font-medium">
+                            <h4 className="font-black text-xs uppercase tracking-wider text-slate-400 mb-3 border-b-2 pb-2">Der Lösungsweg</h4>
+                            {currentTopic.example.calculation}
+                          </div>
+                          <div className="flex flex-col h-full">
+                             <h4 className="font-black text-xs uppercase tracking-wider text-slate-400 mb-3 border-b-2 pb-2 px-2">Der Funktionsgraph</h4>
+                             <div className="flex-grow flex items-center bg-white rounded-xl">
+                               {currentTopic.example.visual}
+                             </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  <div className="bg-red-50 border-4 border-red-200 p-5 rounded-2xl">
+                  {/* Fehlerbox */}
+                  <div className="bg-red-50 border-4 border-red-200 p-5 rounded-2xl relative overflow-hidden">
                     <div className="flex items-center gap-3 text-red-800 font-black mb-2">
-                      <AlertTriangle className="text-2xl" /><span className="uppercase">Achtung: Boss-Falle!</span>
+                      <AlertTriangle className="w-6 h-6" />
+                      <span className="text-lg uppercase tracking-wider">Achtung: Boss-Falle!</span>
                     </div>
-                    <p className="text-red-900 font-bold">{currentTopic.mistakes}</p>
+                    <p className="text-red-900/80 font-bold text-base">
+                      {currentTopic.mistakes}
+                    </p>
                   </div>
 
+                  {/* --- PROGRESSIVES QUIZ --- */}
                   <div className="mt-12 pt-8 border-t-4 border-slate-100">
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="bg-yellow-100 border-2 border-yellow-300 p-2 rounded-xl"><Trophy className="text-2xl" /></div>
-                      <div>
-                        <h3 className="text-2xl font-black text-slate-800 uppercase">Level-Check</h3>
-                        <p className="font-bold text-sm text-slate-500">Frage {activeQuizIndex + 1} von {currentTopic.quiz.length}</p>
+                      <div className="bg-yellow-100 border-2 border-yellow-300 p-2 rounded-xl">
+                        <Trophy className="w-6 h-6 text-yellow-600" />
                       </div>
-                      <span className="text-base font-black text-yellow-800 bg-yellow-200 border-2 border-yellow-400 px-3 py-1.5 rounded-xl ml-auto">{topicScore} XP</span>
+                      <div>
+                        <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight">Level-Check</h3>
+                        <p className="font-bold text-sm text-slate-500">Frage {activeQuizIndex + 1} von 5</p>
+                      </div>
+                      <span className="text-base font-black text-yellow-800 bg-yellow-200 border-2 border-yellow-400 px-3 py-1.5 rounded-xl ml-auto shadow-sm transform -rotate-2">
+                        {topicScore} XP
+                      </span>
                     </div>
 
-                    <div className="bg-slate-50 p-6 rounded-3xl border-4 border-slate-200">
-                      <p className="font-black text-xl mb-6 text-slate-800">{currentTopic.quiz[activeQuizIndex].question}</p>
+                    <div className="bg-slate-50 p-5 sm:p-6 rounded-3xl border-4 border-slate-200 shadow-inner">
+                      <p className="font-black text-xl mb-6 text-slate-800 leading-tight flex flex-wrap items-center">
+                        {currentTopic.quiz[activeQuizIndex].question}
+                      </p>
+                      
                       <div className="space-y-3">
                         {currentTopic.quiz[activeQuizIndex].options.map((opt, optIdx) => {
-                          let btnClass = "w-full text-left p-4 rounded-2xl border-4 font-bold text-lg ";
-                          if (selectedQuizAnswer === null) btnClass += "bg-white border-slate-200 text-slate-700";
-                          else if (optIdx === currentTopic.quiz[activeQuizIndex].answer) btnClass += "bg-green-100 border-green-500 text-green-900";
-                          else if (selectedQuizAnswer === optIdx) btnClass += "bg-red-100 border-red-500 text-red-900";
-                          else btnClass += "bg-white border-slate-200 text-slate-400 opacity-50";
+                          let btnClass = "w-full text-left p-4 rounded-2xl border-4 transition-all font-bold text-lg flex items-center gap-2 ";
+                          
+                          if (selectedQuizAnswer === null) {
+                            btnClass += "bg-white border-slate-200 hover:border-sky-400 hover:bg-sky-50 text-slate-700 hover:-translate-y-1 shadow-[0_4px_0_#e2e8f0] hover:shadow-[0_6px_0_#38bdf8] active:translate-y-1 active:shadow-none";
+                          } else if (optIdx === currentTopic.quiz[activeQuizIndex].answer) {
+                            btnClass += "bg-green-100 border-green-500 text-green-900 shadow-none translate-y-1";
+                          } else if (selectedQuizAnswer === optIdx) {
+                            btnClass += "bg-red-100 border-red-500 text-red-900 opacity-80 shadow-none translate-y-1";
+                          } else {
+                            btnClass += "bg-white border-slate-200 text-slate-400 opacity-50 shadow-none";
+                          }
 
                           return (
-                            <button key={optIdx} disabled={selectedQuizAnswer !== null} onClick={() => handleQuizAnswer(currentTopic.id, optIdx, currentTopic.quiz[activeQuizIndex].answer)} className={btnClass}>
+                            <button 
+                              key={optIdx}
+                              disabled={selectedQuizAnswer !== null}
+                              onClick={() => handleQuizAnswer(currentTopic.id, optIdx, currentTopic.quiz[activeQuizIndex].answer)}
+                              className={btnClass}
+                            >
                               {opt}
                             </button>
                           );
                         })}
                       </div>
 
+                      {/* Quiz Feedback */}
                       {quizResult && (
-                        <div className={`mt-6 p-5 rounded-2xl flex gap-4 border-4 ${quizResult === 'correct' ? 'bg-green-50 border-green-400 text-green-900' : 'bg-red-50 border-red-400 text-red-900'}`}>
-                          {quizResult === 'correct' ? <CheckCircle2 className="text-2xl mt-1" /> : <AlertTriangle className="text-2xl mt-1" />}
-                          <div className="flex-grow">
-                            <p className="font-black text-xl uppercase">{quizResult === 'correct' ? '+20 XP Geknackt!' : 'Leben verloren!'}</p>
-                            <p className="font-medium">{currentTopic.quiz[activeQuizIndex].explanation}</p>
+                        <div className={`mt-6 p-5 rounded-2xl flex flex-col sm:flex-row items-center sm:items-start gap-4 shadow-lg border-4 animate-in fade-in zoom-in duration-300 ${quizResult === 'correct' ? 'bg-green-50 border-green-400 text-green-900' : 'bg-red-50 border-red-400 text-red-900'}`}>
+                          {quizResult === 'correct' ? (
+                            <div className="bg-green-500 rounded-full p-2 shrink-0 border-2 border-green-700">
+                               <CheckCircle2 className="w-6 h-6 text-white" />
+                            </div>
+                          ) : (
+                            <div className="bg-red-500 rounded-full p-2 shrink-0 border-2 border-red-700">
+                               <AlertTriangle className="w-6 h-6 text-white" />
+                            </div>
+                          )}
+                          <div className="text-center sm:text-left flex-grow">
+                            <p className="font-black text-xl mb-1 uppercase tracking-wide">
+                              {quizResult === 'correct' ? '+20 XP Geknackt!' : 'Leben verloren!'}
+                            </p>
+                            <p className="text-base font-medium opacity-90 flex flex-wrap items-center gap-1">{currentTopic.quiz[activeQuizIndex].explanation}</p>
                           </div>
-                          <div>
+                          
+                          <div className="shrink-0 mt-3 sm:mt-0">
                             {quizResult === 'wrong' ? (
-                              <button onClick={() => { setSelectedQuizAnswer(null); setQuizResult(null); }} className="font-black bg-white text-red-600 px-5 py-2 rounded-xl border-4 border-red-200 uppercase">Retry!</button>
+                              <button 
+                                onClick={() => { setSelectedQuizAnswer(null); setQuizResult(null); }}
+                                className="font-black bg-white text-red-600 px-5 py-2 rounded-xl border-4 border-red-200 hover:bg-red-100 active:translate-y-1 transition-all uppercase tracking-wider"
+                              >
+                                Retry!
+                              </button>
                             ) : (
-                              <button onClick={nextQuestion} className="font-black bg-green-500 text-white px-5 py-2 rounded-xl border-b-4 border-green-700 uppercase flex items-center">
-                                {activeQuizIndex < currentTopic.quiz.length - 1 ? 'Next' : 'Finish'} <ChevronRight className="ml-1" />
+                              <button 
+                                onClick={nextQuestion}
+                                className="font-black bg-green-500 text-white px-5 py-2 rounded-xl border-b-4 border-green-700 hover:bg-green-400 hover:border-green-600 active:border-b-0 active:translate-y-1 transition-all uppercase tracking-wider flex items-center"
+                              >
+                                {activeQuizIndex < 4 ? 'Next' : 'Finish'} <ChevronRight className="w-5 h-5 ml-1" />
                               </button>
                             )}
                           </div>
@@ -477,8 +1060,8 @@
       );
     }
 
-    // App in das root-div rendern
-    const root = ReactDOM.createRoot(document.getElementById('root'));
+    // --- APP STARTEN ---
+    const root = createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
 </body>
