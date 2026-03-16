@@ -7,22 +7,27 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <script crossorigin src="https://unpkg.com/lucide-react@0.292.0/dist/umd/lucide-react.min.js"></script>
+  
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="bg-slate-900">
   
   <div id="root"></div>
 
-  <script type="text/babel" data-type="module">
-    // --- IMPORTS AUS DEM INTERNET (esm.sh) ---
-    import React, { useState, useEffect } from 'https://esm.sh/react@18';
-    import { createRoot } from 'https://esm.sh/react-dom@18/client';
-    import { 
+  <script type="text/babel">
+    // --- 1. SETUP: Variablen aus den Skripten holen (ersetzt die 'imports') ---
+    const { useState, useEffect } = React;
+    const icons = window.lucideReact || window.lucide;
+    const { 
       Trophy, Star, AlertTriangle, CheckCircle2, 
       ChevronRight, ArrowLeft, BookMarked, Map, Castle, Play, Lock, Sparkles, Skull 
-    } from 'https://esm.sh/lucide-react';
+    } = icons;
 
-    // --- HILFSKOMPONENTE FÜR BRÜCHE ---
+    // --- 2. HILFSKOMPONENTE FÜR BRÜCHE ---
     const Fraction = ({ num, den }) => (
       <span className="inline-flex flex-col items-center justify-center align-middle mx-1 text-base font-bold">
         <span className="border-b-2 border-current px-1 pb-0.5 w-full text-center leading-none">{num}</span>
@@ -30,7 +35,7 @@
       </span>
     );
 
-    // --- HILFSKOMPONENTEN FÜR EXAKTE MATHEMATISCHE GRAPHEN ---
+    // --- 3. HILFSKOMPONENTEN FÜR EXAKTE MATHEMATISCHE GRAPHEN ---
     const mapX = (x, xD, w) => ((x - xD[0]) / (xD[1] - xD[0])) * w;
     const mapY = (y, yD, h) => h - ((y - yD[0]) / (yD[1] - yD[0])) * h;
 
@@ -91,7 +96,7 @@
       <rect x={mapX(xStart, xD, w)} y={0} width={mapX(xEnd, xD, w) - mapX(xStart, xD, w)} height={h} fill={color} opacity="0.15" />
     );
 
-    // --- DEKORATIONEN WELTKARTE ---
+    // --- 4. DEKORATIONEN WELTKARTE ---
     const Cloud = ({ style, delay, isDark }) => (
       <div className={`absolute opacity-80 pointer-events-none animate-pulse`} style={{ ...style, animationDuration: '4s', animationDelay: delay }}>
         <svg width="100" height="40" viewBox="0 0 100 40" fill={isDark ? "#475569" : "white"}>
@@ -109,7 +114,7 @@
       </div>
     );
 
-    // --- DATEN: WELT 1 & WELT 2 ---
+    // --- 5. DATEN: WELT 1 & WELT 2 ---
     const topicsData = [
       {
         id: "mittlere-aenderung",
@@ -696,7 +701,6 @@
       return (
         <div className="min-h-screen font-sans text-slate-800 bg-slate-900 pb-10">
           
-          {/* HEADER */}
           <header className="bg-white sticky top-0 z-50 border-b-4 border-slate-300 shadow-md">
             <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
               <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setView('home')}>
@@ -723,7 +727,6 @@
             </div>
           </header>
 
-          {/* LEVEL UP NOTIFICATION */}
           {showLevelUp && (
             <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 bg-yellow-400 text-slate-900 px-8 py-4 rounded-xl shadow-2xl flex items-center space-x-3 animate-bounce border-4 border-white">
               <Star className="w-8 h-8 fill-slate-900" />
@@ -731,14 +734,11 @@
             </div>
           )}
 
-          {/* MAIN CONTENT */}
           <main className="w-full max-w-md md:max-w-3xl mx-auto mt-4 rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-800 bg-white relative">
             
-            {/* VIEW: WORLD MAP DASHBOARD */}
             {view === 'home' && (
               <div className={`w-full h-[700px] sm:h-[800px] relative overflow-hidden transition-colors duration-1000 ${isWorld2Dark ? 'bg-gradient-to-b from-orange-600 to-red-900' : 'bg-gradient-to-b from-sky-400 to-sky-200'}`}>
                 
-                {/* Background Decorations */}
                 <Cloud style={{ top: '10%', left: '10%', transform: 'scale(1.2)' }} delay="0s" isDark={isWorld2Dark} />
                 <Cloud style={{ top: '25%', right: '5%', transform: 'scale(0.8)' }} delay="2s" isDark={isWorld2Dark} />
                 <Cloud style={{ top: '50%', left: '20%', transform: 'scale(1.5)' }} delay="1s" isDark={isWorld2Dark} />
@@ -749,14 +749,12 @@
                 <Hill style={{ left: '20%', bottom: '0', transform: 'scale(1.2)', transformOrigin: 'bottom' }} isDark={isWorld2Dark} />
                 <div className={`absolute bottom-0 w-full h-16 border-t-8 z-0 transition-colors duration-1000 ${isWorld2Dark ? 'bg-slate-900 border-slate-950' : 'bg-green-500 border-green-600'}`}></div>
                 
-                {/* World Title */}
                 <div className="absolute top-4 left-4 z-20 bg-slate-800/90 backdrop-blur border-2 border-slate-900 px-3 py-1.5 rounded-lg shadow-md">
                   <span className="font-black text-xs sm:text-sm text-white uppercase tracking-widest">
                     {activeWorld === 1 ? "Welt 1: Grundlagen" : "Welt 2: Klausur-Training"}
                   </span>
                 </div>
 
-                {/* Progress Bar mit verstecktem Fehler-Counter */}
                 <div className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur border-2 border-slate-800 px-3 py-2 rounded-xl shadow-lg flex flex-col gap-1 w-32 sm:w-44">
                   <div className="flex justify-between items-end leading-none mb-0.5">
                      <span className="font-black text-[10px] sm:text-xs text-slate-800 uppercase">Fortschritt</span>
@@ -768,7 +766,6 @@
                       style={{ width: `${progressPercent}%` }}
                     />
                   </div>
-                  {/* Der Fehlerzähler wird nur bei 100% eingeblendet */}
                   {progressPercent === 100 && (
                     <div className="mt-1 pt-1 border-t-2 border-slate-200 flex justify-between items-center text-[10px] sm:text-xs font-black animate-in fade-in zoom-in duration-500">
                       <span className="text-slate-500 uppercase tracking-wider">Fehler gesamt:</span>
@@ -777,7 +774,6 @@
                   )}
                 </div>
 
-                {/* WORLD NAVIGATION BUTTONS */}
                 {activeWorld === 1 && isWorld1Complete && (
                   <button 
                     onClick={() => setActiveWorld(2)} 
@@ -797,24 +793,20 @@
                   </button>
                 )}
 
-                {/* THE MAP CANVAS */}
                 <div className="absolute inset-0 z-10 px-8 py-20 pointer-events-none">
                   <div className="relative w-full h-full pointer-events-auto">
                     
-                    {/* 1. Der gestrichelte Pfad */}
                     <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full overflow-visible pointer-events-none drop-shadow-md" preserveAspectRatio="none">
                       <path d={generatePathD()} stroke={isWorld2Dark ? "#7f1d1d" : "#b45309"} strokeWidth="4" fill="none" strokeDasharray="0 8" strokeLinecap="round" transform="translate(0, 1)" vectorEffect="non-scaling-stroke"/>
                       <path d={generatePathD()} stroke={isWorld2Dark ? "#fca5a5" : "#fef08a"} strokeWidth="4" fill="none" strokeDasharray="0 8" strokeLinecap="round" vectorEffect="non-scaling-stroke"/>
                     </svg>
 
-                    {/* Startschild */}
                     {activeWorld === 1 && (
                       <div className="absolute font-black text-white bg-red-600 border-2 border-white px-2 py-1 rounded shadow-md text-xs transform -rotate-12" style={{ left: '5%', top: '92%' }}>
                         START
                       </div>
                     )}
 
-                    {/* 2. Die Level-Buttons */}
                     {currentWorldTopicsData.map((topic) => {
                       const globalIndex = topicsData.findIndex(t => t.id === topic.id);
                       const isComplete = completedTopics.includes(topic.id);
@@ -827,7 +819,6 @@
                           className="absolute transform -translate-x-1/2 -translate-y-1/2 group focus:outline-none z-20"
                           style={{ left: `${topic.mapPos.x}%`, top: `${topic.mapPos.y}%` }}
                         >
-                          {/* --- PREVIEW CARD (Vorschau beim Hover) --- */}
                           {!isLocked && (
                             <div className="absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2 w-48 bg-white rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none border-4 border-slate-800 z-50 scale-95 group-hover:scale-100 origin-bottom">
                                <div className={`text-white p-1.5 text-center rounded-t-md font-black text-[10px] uppercase tracking-widest ${topic.isBoss ? 'bg-red-600' : 'bg-slate-800'}`}>
@@ -848,7 +839,6 @@
                             </div>
                           )}
 
-                          {/* --- DER EIGENTLICHE BUTTON --- */}
                           <button 
                             onClick={() => { if (!isLocked) openTopic(topic.id); }} 
                             className={`focus:outline-none transition-all ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
@@ -893,10 +883,8 @@
               </div>
             )}
 
-            {/* VIEW: TOPIC DETAIL (LEARNING & QUIZ) */}
             {view === 'topic' && currentTopic && (
               <div className="w-full bg-white animate-in slide-in-from-right-8 duration-300">
-                {/* Header */}
                 <div className={`p-6 sm:p-8 text-white relative overflow-hidden border-b-8 ${currentTopic.world === 2 ? 'bg-red-900 border-red-950' : 'bg-slate-800 border-slate-900'}`}>
                   <button 
                     onClick={() => setView('home')}
@@ -918,12 +906,10 @@
 
                 <div className="p-6 sm:p-8 space-y-10">
                   
-                  {/* Basis-Erklärung */}
                   <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed text-lg">
                     {currentTopic.content}
                   </div>
 
-                  {/* KONKRETES BEISPIEL */}
                   {currentTopic.example && (
                     <div className="bg-sky-50 border-4 border-sky-200 rounded-2xl overflow-hidden shadow-sm">
                       <div className="bg-sky-200 px-5 py-3 flex items-center gap-3">
@@ -954,7 +940,6 @@
                     </div>
                   )}
 
-                  {/* Fehlerbox */}
                   <div className="bg-red-50 border-4 border-red-200 p-5 rounded-2xl relative overflow-hidden">
                     <div className="flex items-center gap-3 text-red-800 font-black mb-2">
                       <AlertTriangle className="w-6 h-6" />
@@ -965,7 +950,6 @@
                     </p>
                   </div>
 
-                  {/* --- PROGRESSIVES QUIZ --- */}
                   <div className="mt-12 pt-8 border-t-4 border-slate-100">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="bg-yellow-100 border-2 border-yellow-300 p-2 rounded-xl">
@@ -1012,7 +996,6 @@
                         })}
                       </div>
 
-                      {/* Quiz Feedback */}
                       {quizResult && (
                         <div className={`mt-6 p-5 rounded-2xl flex flex-col sm:flex-row items-center sm:items-start gap-4 shadow-lg border-4 animate-in fade-in zoom-in duration-300 ${quizResult === 'correct' ? 'bg-green-50 border-green-400 text-green-900' : 'bg-red-50 border-red-400 text-red-900'}`}>
                           {quizResult === 'correct' ? (
@@ -1060,8 +1043,8 @@
       );
     }
 
-    // --- APP STARTEN ---
-    const root = createRoot(document.getElementById('root'));
+    // --- 6. APP STARTEN ---
+    const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
 </body>
