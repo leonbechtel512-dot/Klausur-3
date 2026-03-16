@@ -5,29 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Klausur-Welt</title>
   
-  <!-- React & ReactDOM (Stabile Versionen) -->
+  <!-- 1. Das Design-System (Tailwind) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 2. React & ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
-  <!-- Babel (übersetzt den Code) -->
+  <!-- 3. Babel (übersetzt den React-Code für den Browser) -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <!-- Basis Styling für den Fall der Fälle -->
-  <style>
-    body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; }
-  </style>
 </head>
 <body class="bg-slate-900 text-slate-800 antialiased min-h-screen">
   
-  <!-- Hier wird die React-App reingeladen -->
+  <!-- Hier lädt die App hinein -->
   <div id="root"></div>
 
   <!-- UNSER REACT CODE -->
-  <script type="text/babel" id="react-code" data-presets="react,env">
+  <script type="text/babel">
     const { useState, useEffect } = React;
 
     // ==========================================
-    // 1. ICONS (Direkt als SVG - 100% absturzsicher)
+    // 1. ICONS (Direkt als SVG eingebaut)
     // ==========================================
     const Icon = ({ children, className = "", ...props }) => (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
@@ -47,7 +45,6 @@
     const Lock = (p) => <Icon {...p}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Icon>;
     const Sparkles = (p) => <Icon {...p}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></Icon>;
     const Skull = (p) => <Icon {...p}><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="m12.5 17-.5-1-.5 1h1z"/><path d="M16 20a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20"/></Icon>;
-
 
     // ==========================================
     // 2. UI KOMPONENTEN
@@ -119,7 +116,6 @@
       <rect x={mapX(xStart, xD, w)} y={0} width={mapX(xEnd, xD, w) - mapX(xStart, xD, w)} height={h} fill={color} opacity="0.15" />
     );
 
-    // --- DEKORATIONEN ---
     const Cloud = ({ style, delay, isDark }) => (
       <div className={`absolute opacity-80 pointer-events-none animate-pulse`} style={{ ...style, animationDuration: '4s', animationDelay: delay }}>
         <svg width="100" height="40" viewBox="0 0 100 40" fill={isDark ? "#475569" : "white"}>
@@ -1075,19 +1071,5 @@
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
-
-  <!-- ==========================================
-       TAILWIND CSS LADER (Muss zwingend GANZ UNTEN stehen!) 
-       Er zwingt Tailwind dazu, unseren React-Code als Text 
-       einzulesen und alle Klassen ("bg-red-500") herauszufiltern.
-       ========================================== -->
-  <script>
-    window.tailwind = {
-      content: [
-        { raw: document.getElementById('react-code').innerHTML, extension: 'jsx' }
-      ]
-    };
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
 </body>
 </html>
