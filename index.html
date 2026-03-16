@@ -5,23 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Klausur-Welt</title>
   
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM (Stabile Versionen) -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
+  <!-- Babel (übersetzt den Code) -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Basis Styling für den Fall der Fälle -->
+  <style>
+    body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; }
+  </style>
 </head>
-<body class="bg-slate-900">
+<body class="bg-slate-900 text-slate-800 antialiased min-h-screen">
   
+  <!-- Hier wird die React-App reingeladen -->
   <div id="root"></div>
 
-  <script type="text/babel">
+  <!-- UNSER REACT CODE -->
+  <script type="text/babel" id="react-code" data-presets="react,env">
     const { useState, useEffect } = React;
 
-    // --- NEUER ANSATZ: Icons direkt im Code, kein externes Skript nötig! ---
-    const Icon = ({ children, ...props }) => (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    // ==========================================
+    // 1. ICONS (Direkt als SVG - 100% absturzsicher)
+    // ==========================================
+    const Icon = ({ children, className = "", ...props }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
         {children}
       </svg>
     );
@@ -32,7 +41,7 @@
     const ChevronRight = (p) => <Icon {...p}><path d="m9 18 6-6-6-6"/></Icon>;
     const ArrowLeft = (p) => <Icon {...p}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></Icon>;
     const BookMarked = (p) => <Icon {...p}><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><path d="M7 7h10"/><path d="M7 11h10"/></Icon>;
-    const Map = (p) => <Icon {...p}><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></Icon>;
+    const MapIcon = (p) => <Icon {...p}><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></Icon>;
     const Castle = (p) => <Icon {...p}><path d="M22 20v-9H2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2Z"/><path d="M18 11V4H6v7"/><path d="M15 22v-4a3 3 0 0 0-3-3v0a3 3 0 0 0-3 3v4"/><path d="M22 11V9"/><path d="M2 11V9"/><path d="M6 4V2"/><path d="M18 4V2"/><path d="M10 4V2"/><path d="M14 4V2"/></Icon>;
     const Play = (p) => <Icon {...p}><polygon points="5 3 19 12 5 21 5 3"/></Icon>;
     const Lock = (p) => <Icon {...p}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Icon>;
@@ -40,7 +49,9 @@
     const Skull = (p) => <Icon {...p}><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="m12.5 17-.5-1-.5 1h1z"/><path d="M16 20a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20"/></Icon>;
 
 
-    // --- HILFSKOMPONENTE FÜR BRÜCHE ---
+    // ==========================================
+    // 2. UI KOMPONENTEN
+    // ==========================================
     const Fraction = ({ num, den }) => (
       <span className="inline-flex flex-col items-center justify-center align-middle mx-1 text-base font-bold">
         <span className="border-b-2 border-current px-1 pb-0.5 w-full text-center leading-none">{num}</span>
@@ -48,7 +59,6 @@
       </span>
     );
 
-    // --- HILFSKOMPONENTEN FÜR EXAKTE MATHEMATISCHE GRAPHEN ---
     const mapX = (x, xD, w) => ((x - xD[0]) / (xD[1] - xD[0])) * w;
     const mapY = (y, yD, h) => h - ((y - yD[0]) / (yD[1] - yD[0])) * h;
 
@@ -57,7 +67,7 @@
       const originY = mapY(0, yD, height);
 
       return (
-        <div className="w-full overflow-hidden bg-white rounded-xl shadow-inner border border-slate-200 p-2">
+        <div className="w-full overflow-hidden bg-white rounded-xl shadow-inner border-2 border-slate-200 p-2">
           <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto font-sans">
             <defs>
               <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
@@ -109,7 +119,7 @@
       <rect x={mapX(xStart, xD, w)} y={0} width={mapX(xEnd, xD, w) - mapX(xStart, xD, w)} height={h} fill={color} opacity="0.15" />
     );
 
-    // --- DEKORATIONEN WELTKARTE ---
+    // --- DEKORATIONEN ---
     const Cloud = ({ style, delay, isDark }) => (
       <div className={`absolute opacity-80 pointer-events-none animate-pulse`} style={{ ...style, animationDuration: '4s', animationDelay: delay }}>
         <svg width="100" height="40" viewBox="0 0 100 40" fill={isDark ? "#475569" : "white"}>
@@ -127,7 +137,9 @@
       </div>
     );
 
-    // --- DATEN ---
+    // ==========================================
+    // 3. LERN-INHALTE
+    // ==========================================
     const topicsData = [
       {
         id: "mittlere-aenderung",
@@ -140,7 +152,7 @@
           <div className="space-y-4 text-gray-700">
             <p>Die <strong>mittlere Änderungsrate</strong> gibt an, wie stark sich ein Graph in einem bestimmten Abschnitt (Intervall) <em>durchschnittlich</em> ändert. Stell dir vor, du verbindest Start- und Endpunkt dieses Abschnitts mit einer geraden Linie (der sogenannten <strong>Sekante</strong>).</p>
             <p>Die Steigung dieser Sekante berechnen wir mit dem <strong>Differenzenquotient</strong> (das ist im Prinzip nur das Steigungsdreieck <span className="inline-flex items-center align-middle">m = <Fraction num="Δy" den="Δx" /></span>):</p>
-            <div className="bg-sky-50 p-4 rounded-lg border border-sky-200 flex items-center justify-center font-mono text-lg font-bold text-sky-900">
+            <div className="bg-sky-50 p-4 rounded-lg border border-sky-200 flex items-center justify-center font-mono text-lg font-bold text-sky-900 shadow-sm">
               m = <Fraction num="f(x₂) - f(x₁)" den="x₂ - x₁" />
             </div>
           </div>
@@ -611,6 +623,9 @@
       }
     ];
 
+    // ==========================================
+    // 4. HAUPT-APP-LOGIK
+    // ==========================================
     function App() {
       const [view, setView] = useState('home'); 
       const [currentTopicId, setCurrentTopicId] = useState(null);
@@ -909,7 +924,7 @@
                   
                   <div className="relative z-10 flex items-center gap-4">
                     <div className="bg-white/10 p-3 rounded-xl shrink-0">
-                      {currentTopic.isBoss ? <Castle className="w-8 h-8 text-yellow-400" /> : <Map className="w-8 h-8 text-sky-400" />}
+                      {currentTopic.isBoss ? <Castle className="w-8 h-8 text-yellow-400" /> : <MapIcon className="w-8 h-8 text-sky-400" />}
                     </div>
                     <div>
                       <span className="uppercase text-slate-400 font-black text-xs tracking-widest block mb-1">{currentTopic.category}</span>
@@ -932,7 +947,7 @@
                       </div>
                       
                       <div className="p-5 space-y-6">
-                        <div className="bg-white border-2 border-sky-200 rounded-xl p-3 text-center">
+                        <div className="bg-white border-2 border-sky-200 rounded-xl p-3 text-center shadow-sm">
                           <span className="font-mono text-lg font-black text-slate-800">
                             {currentTopic.example.functionText}
                           </span>
@@ -1060,5 +1075,19 @@
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
+
+  <!-- ==========================================
+       TAILWIND CSS LADER (Muss zwingend GANZ UNTEN stehen!) 
+       Er zwingt Tailwind dazu, unseren React-Code als Text 
+       einzulesen und alle Klassen ("bg-red-500") herauszufiltern.
+       ========================================== -->
+  <script>
+    window.tailwind = {
+      content: [
+        { raw: document.getElementById('react-code').innerHTML, extension: 'jsx' }
+      ]
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </body>
 </html>
